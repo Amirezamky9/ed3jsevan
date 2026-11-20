@@ -1,0 +1,8 @@
+{
+  "name": "کافه و رستوران ایوان — منوی دیجیتال سه‌بعدی",
+  "description": "منوی دیجیتال سه‌بعدی کافه و رستوران ایوان با فضای معماری قوسی، انتخابگر دانه قهوه و سیروپ، عکاسی استودیویی محصولات و کارت نمایش به ویتر.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,228 @@
+import React, { useEffect, useState } from 'react';
+import { Check, Clock, Copy, ExternalLink, MapPin, Thermometer, X } from 'lucide-react';
+import { CAFE_INFO } from '../data/menuData';
+import { EyvanLogo } from './EyvanLogo';
+
+export const InstagramIcon: React.FC<{ className?: string }> = ({
+  className = 'h-4 w-4',
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className={className}
+  >
+    <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+    <circle cx="12" cy="12" r="4.2" />
+    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+interface CafeInfoModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export const CafeInfoModal: React.FC<CafeInfoModalProps> = ({
+  open,
+  onClose,
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const handleCopyInstagram = async () => {
+    try {
+      await navigator.clipboard.writeText(CAFE_INFO.instagramUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2200);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cafe-info-title"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-[#060B14]/78 p-0 sm:items-center sm:p-6"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="eyvan-enter flex max-h-[90vh] w-full max-w-[600px] flex-col overflow-hidden rounded-t-[20px] border border-[rgba(244,241,234,0.12)] bg-[#131C30] sm:rounded-[20px]">
+        <div className="flex items-center justify-between border-b border-[rgba(244,241,234,0.09)] px-6 py-4">
+          <h2
+            id="cafe-info-title"
+            className="text-lg font-semibold text-[#F4F1EA]"
+          >
+            مشخصات و نشانی کافه ایوان
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="بستن پنجره مشخصات کافه"
+            className="flex h-10 w-10 items-center justify-center rounded-[10px] border border-[rgba(244,241,234,0.12)] text-[#B8C0CC] transition-colors hover:border-[#D4B47C] hover:text-[#F4F1EA]"
+          >
+            <X className="h-4 w-4" strokeWidth={1.5} />
+          </button>
+        </div>
+
+        <div className="eyvan-scroll flex-1 space-y-6 overflow-y-auto px-6 py-6">
+          {/* Official Full Vertical Logo */}
+          <div className="flex flex-col items-center rounded-[14px] border border-[rgba(244,241,234,0.08)] bg-[#0E1525] py-6">
+            <EyvanLogo variant="full" tone="gold" />
+            <p className="mt-3 max-w-sm text-center text-xs leading-6 text-[#B8C0CC]">
+              فضای آرام، قهوه تخصصی با انتخاب دانه ۵۰/۵۰ یا ۱۰۰٪ عربیکا، دمنوش‌های
+              ایرانی و به‌زودی آشپزخانه کامل رستوران ایوان
+            </p>
+          </div>
+
+          {/* Info rows */}
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <MapPin
+                className="mt-0.5 h-4 w-4 shrink-0 text-[#D4B47C]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <h3 className="text-sm font-medium text-[#F4F1EA]">
+                  نشانی و موقعیت مکانی
+                </h3>
+                <p className="mt-1 text-xs leading-6 text-[#B8C0CC]">
+                  {CAFE_INFO.addressStatus}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Clock
+                className="mt-0.5 h-4 w-4 shrink-0 text-[#D4B47C]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <h3 className="text-sm font-medium text-[#F4F1EA]">
+                  ساعات پذیرایی
+                </h3>
+                <p className="mt-1 tabular-fa text-xs text-[#B8C0CC]">
+                  {CAFE_INFO.hours}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Thermometer
+                className="mt-0.5 h-4 w-4 shrink-0 text-[#9AA16A]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <h3 className="text-sm font-medium text-[#F4F1EA]">
+                  استاندارد سرو بار گرم
+                </h3>
+                <p className="mt-1 text-xs leading-6 text-[#B8C0CC]">
+                  {CAFE_INFO.milkTempNote}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Stylized Architectural Location Frame */}
+          <div className="relative overflow-hidden rounded-[14px] border border-[rgba(244,241,234,0.09)] bg-[#0E1525] p-5">
+            <svg
+              viewBox="0 0 480 140"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              className="w-full opacity-80"
+            >
+              <path
+                d="M0 32H480M0 78H480M0 118H480M84 0V140M196 0V140M312 0V140M418 0V140"
+                stroke="rgba(244,241,234,0.08)"
+                strokeWidth="1"
+              />
+              <path
+                d="M40 120C120 96 184 78 240 72C298 66 364 48 446 24"
+                stroke="#6B7043"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+              />
+              <circle
+                cx="240"
+                cy="72"
+                r="22"
+                stroke="#AF894B"
+                strokeWidth="1.2"
+                fill="rgba(175,137,75,0.12)"
+              />
+              <circle cx="240" cy="72" r="5" fill="#D4B47C" />
+            </svg>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-[#B8C0CC]">
+              <span>{CAFE_INFO.coordinatesLabel}</span>
+              <span className="text-[#828D9E]">{CAFE_INFO.paymentNote}</span>
+            </div>
+          </div>
+
+          {/* Official Instagram actions */}
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[rgba(212,180,124,0.22)] bg-[#17233A] p-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#0E1525] text-[#D4B47C]">
+                <InstagramIcon className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="text-sm font-medium text-[#F4F1EA]">
+                  صفحه رسمی اینستاگرام ایوان
+                </div>
+                <div dir="ltr" className="mt-0.5 text-right text-xs text-[#D4B47C]">
+                  {CAFE_INFO.instagramHandle}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleCopyInstagram}
+                className="inline-flex items-center gap-1.5 rounded-[8px] border border-[rgba(244,241,234,0.12)] px-3 py-2 text-xs text-[#F4F1EA] transition-colors hover:border-[#D4B47C]"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-[#9AA16A]" strokeWidth={1.75} />
+                    <span>کپی شد</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" strokeWidth={1.5} />
+                    <span>کپی لینک</span>
+                  </>
+                )}
+              </button>
+              <a
+                href={CAFE_INFO.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-[8px] bg-[#D4B47C] px-3.5 py-2 text-xs font-medium text-[#0E1525] transition-colors hover:bg-[#E1C48F]"
+              >
+                <span>مشاهده پیج</span>
+                <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.6} />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
