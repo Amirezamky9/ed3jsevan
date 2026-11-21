@@ -12,7 +12,12 @@ import {
   groupMenuForSimpleView,
   toPersianDigits,
 } from './menuLogic';
-import { easeOutCubic, projectTableSeat } from './tableProjection';
+import {
+  easeInOutCubic,
+  easeOutCubic,
+  easeOutQuart,
+  projectTableSeat,
+} from './tableProjection';
 
 test('menu contains all 67 items across 8 active categories and 3 upcoming sections with both top-down and front images', () => {
   const activeCategories = MENU_CATEGORIES.filter((c) => !c.comingSoon);
@@ -28,17 +33,19 @@ test('menu contains all 67 items across 8 active categories and 3 upcoming secti
 
   for (const item of MENU_ITEMS) {
     assert.ok(
-      item.image.startsWith('/src/assets/images/topdown_'),
-      `Missing overhead photo for ${item.id}`,
+      item.image.startsWith('/src/assets/images/topdown_') &&
+        item.image.endsWith('.webp'),
+      `Missing optimized WebP overhead photo for ${item.id}`,
     );
     assert.ok(
-      item.frontImage.startsWith('/src/assets/images/eyvan_'),
-      `Missing front glass photo for ${item.id}`,
+      item.frontImage.startsWith('/src/assets/images/eyvan_') &&
+        item.frontImage.endsWith('.webp'),
+      `Missing optimized WebP front glass photo for ${item.id}`,
     );
     assert.ok(
       item.cutoutImage.startsWith('/src/assets/images/cutouts/') &&
-        item.cutoutImage.endsWith('.png'),
-      `Missing transparent PNG cutout for ${item.id}`,
+        item.cutoutImage.endsWith('.webp'),
+      `Missing transparent WebP cutout for ${item.id}`,
     );
   }
 
@@ -189,7 +196,8 @@ test('3D table projection locks front seat to exact coaster center with monotoni
         (sideRight.screenX - base.tableCenterX),
     ) < 0.01,
   );
-  assert.ok(sideLeft.blurPx > 2 && sideLeft.blurPx < back.blurPx);
+  assert.ok(sideLeft.blurPx > 0.8 && sideLeft.blurPx < 2.2);
+  assert.ok(back.blurPx > sideLeft.blurPx && back.blurPx <= 4.3);
 
   // Strict painter's-order depth sorting: front > sides > back
   assert.ok(front.zIndex > sideLeft.zIndex);
@@ -198,5 +206,9 @@ test('3D table projection locks front seat to exact coaster center with monotoni
   assert.equal(easeOutCubic(0), 0);
   assert.equal(easeOutCubic(1), 1);
   assert.ok(easeOutCubic(0.5) > 0.8);
+  assert.equal(easeInOutCubic(0), 0);
+  assert.equal(easeInOutCubic(0.5), 0.5);
+  assert.equal(easeInOutCubic(1), 1);
+  assert.equal(easeOutQuart(1), 1);
 });
 

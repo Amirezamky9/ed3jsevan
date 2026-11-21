@@ -115,6 +115,8 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
                           <img
                             src={item.image}
                             alt={item.name}
+                            loading="lazy"
+                            decoding="async"
                             referrerPolicy="no-referrer"
                             className="h-full w-full object-cover"
                           />

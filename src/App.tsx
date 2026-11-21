@@ -57,6 +57,9 @@ export default function App() {
   >({});
 
   const dockButtonsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const mobileDockButtonsRef = useRef<Record<string, HTMLButtonElement | null>>(
+    {},
+  );
 
   const activeCategory = useMemo(
     () =>
@@ -91,18 +94,31 @@ export default function App() {
     return getBackdropHex(tone);
   }, [viewMode, activeItem, activeCategory.defaultTone]);
 
-  // Keep the active category pill centered in the mobile bottom dock when switched or resized
+  // Keep the active category pill centered horizontally inside its own scroll rail (without ever vertically scrolling the page!)
   useEffect(() => {
     if (viewMode !== 'table') return;
+    const centerInRail = (
+      btn: HTMLButtonElement | null | undefined,
+      behavior: ScrollBehavior,
+    ) => {
+      if (!btn || !btn.parentElement) return;
+      const rail = btn.parentElement;
+      if (rail.clientWidth === 0) return;
+      const btnRect = btn.getBoundingClientRect();
+      const railRect = rail.getBoundingClientRect();
+      const delta =
+        btnRect.left -
+        railRect.left -
+        railRect.width / 2 +
+        btnRect.width / 2;
+      rail.scrollTo({
+        left: rail.scrollLeft + delta,
+        behavior,
+      });
+    };
     const syncDock = (behavior: ScrollBehavior) => {
-      const btn = dockButtonsRef.current[activeCategoryId];
-      if (btn && typeof btn.scrollIntoView === 'function') {
-        btn.scrollIntoView({
-          behavior,
-          inline: 'center',
-          block: 'nearest',
-        });
-      }
+      centerInRail(dockButtonsRef.current[activeCategoryId], behavior);
+      centerInRail(mobileDockButtonsRef.current[activeCategoryId], behavior);
     };
     const raf = window.requestAnimationFrame(() => syncDock('smooth'));
     const onResize = () => syncDock('auto');
@@ -232,7 +248,7 @@ export default function App() {
       style={{ backgroundColor: backdropHex }}
     >
       {/* Top Bar — 3-Zone Editorial Header (Official Eyvan Logo · Clean Links · Simple Menu / Rotary Table Toggle) */}
-      <header className="fixed inset-x-0 top-0 z-30 h-14 border-b border-[rgba(244,241,234,0.1)] bg-[#0D1423]/84 backdrop-blur-md md:h-16">
+      <header className="fixed inset-x-0 top-0 z-30 h-14 border-b border-[rgba(244,241,234,0.1)] bg-[#0D1423]/96 md:h-16 lg:bg-[#0D1423]/86 lg:backdrop-blur-md">
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
           {/* Zone 1: Official Eyvan Brand Mark */}
           <button
@@ -336,7 +352,52 @@ export default function App() {
           />
         </main>
       ) : (
-        <main className="relative h-[100dvh] min-h-[680px] w-full overflow-hidden">
+        <main className="relative h-[100dvh] min-h-[600px] w-full overflow-hidden">
+          {/* Mobile Always-Visible Top Category Bar (directly below header — never hidden by mobile browser toolbars!) */}
+          <nav
+            aria-label="انتخاب دسته‌بندی منو در موبایل"
+            className="fixed inset-x-0 top-[56px] z-30 border-b border-[rgba(244,241,234,0.1)] bg-[#0E1525]/97 px-2.5 py-1.5 lg:hidden"
+          >
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setMobileCatsOpen(true)}
+                className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-[8px] border border-[rgba(212,180,124,0.55)] bg-[#1D2D4B] px-2.5 text-[11.5px] font-medium text-[#E3C58A] whitespace-nowrap transition-colors hover:bg-[#25395E]"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" strokeWidth={1.8} />
+                <span>دسته‌ها</span>
+              </button>
+
+              <div className="eyvan-scroll-hidden flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
+                {MENU_CATEGORIES.map((category) => {
+                  const isActive = category.id === activeCategoryId;
+                  return (
+                    <button
+                      key={`mob-${category.id}`}
+                      ref={(el) => {
+                        mobileDockButtonsRef.current[category.id] = el;
+                      }}
+                      type="button"
+                      onClick={() => handleSelectCategory(category.id)}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`inline-flex h-8 shrink-0 items-center gap-1 rounded-[8px] px-2.5 text-[11.5px] font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4B47C] ${
+                        isActive
+                          ? 'border border-[rgba(212,180,124,0.58)] bg-[#1B2B48] text-[#E3C58A]'
+                          : 'border border-transparent text-[#DCE2EC] hover:bg-[#162238] hover:text-[#FAF8F2]'
+                      }`}
+                    >
+                      <span>{category.shortName}</span>
+                      {category.comingSoon && (
+                        <span className="text-[9.5px] font-normal text-[#B2BA7E]">
+                          به‌زودی
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </nav>
           {/* Layer 1: Giant Rotating Circular Marble Tabletop + 3D Forward Camera Tilt */}
           <RotaryTableStage
             category={activeCategory}
@@ -366,7 +427,7 @@ export default function App() {
 
           {/* Overview Mode Top Exit Bar */}
           {overviewMode && (
-            <div className="eyvan-text-enter pointer-events-none fixed inset-x-0 top-[66px] z-20 flex justify-center px-4 md:top-[72px]">
+            <div className="eyvan-text-enter pointer-events-none fixed inset-x-0 top-[108px] z-20 flex justify-center px-4 lg:top-[72px]">
               <div className="pointer-events-auto flex items-center gap-3.5 rounded-[12px] border border-[rgba(244,241,234,0.16)] bg-[#0E1525]/94 px-4 py-1.5 text-xs text-[#F8F5EE]">
                 <span>نمای کلی میز · {activeCategory.name}</span>
                 <span aria-hidden="true" className="text-[#8B95A6]">
@@ -386,14 +447,14 @@ export default function App() {
           {/* Layer 2: Right-Side Editorial Product Showcase (Desktop RTL Right / Mobile Lower Sheet) */}
           <section
             aria-label="جزئیات محصول انتخاب‌شده روی میز"
-            className={`pointer-events-none relative z-20 mx-auto flex h-full max-w-[1440px] flex-col justify-end px-3 pt-16 pb-[68px] transition-[opacity,transform] duration-500 ease-out sm:px-6 lg:flex-row lg:items-center lg:justify-start lg:px-12 lg:pt-16 lg:pb-16 ${
+            className={`pointer-events-none relative z-20 mx-auto flex h-full max-w-[1440px] flex-col justify-end px-3 pt-28 pb-3 transition-[opacity,transform] duration-500 ease-out sm:px-6 lg:flex-row lg:items-center lg:justify-start lg:px-12 lg:pt-16 lg:pb-16 ${
               overviewMode
                 ? 'translate-y-4 opacity-0'
                 : 'translate-y-0 opacity-100'
             }`}
           >
             <div
-              className={`pointer-events-auto w-full max-w-[460px] rounded-[18px] border border-[rgba(244,241,234,0.12)] bg-[#0E1525]/84 px-4 py-3.5 backdrop-blur-md lg:max-w-[440px] lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none ${
+              className={`pointer-events-auto w-full max-w-[460px] rounded-[18px] border border-[rgba(244,241,234,0.12)] bg-[#0E1525]/94 px-4 py-3.5 lg:max-w-[440px] lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 ${
                 overviewMode ? 'pointer-events-none' : ''
               }`}
             >
@@ -691,22 +752,12 @@ export default function App() {
             </div>
           </section>
 
-          {/* Bottom Spatial Category Dock — Pinned Mobile "دسته‌ها" Trigger + Full Scrollable Strip */}
+          {/* Desktop Bottom Spatial Category Dock (Mobile uses the always-visible top category bar below header) */}
           <nav
             aria-label="دسته‌بندی‌های منوی کافه و رستوران ایوان"
-            className="pointer-events-none fixed inset-x-0 bottom-2.5 z-30 flex justify-center px-2.5 sm:bottom-3 sm:px-3"
+            className="pointer-events-none fixed inset-x-0 bottom-3 z-30 hidden justify-center px-3 lg:flex"
           >
-            <div className="pointer-events-auto flex h-[52px] w-full max-w-[1180px] items-center gap-1.5 rounded-[14px] border border-[rgba(244,241,234,0.16)] bg-[#0D1423]/95 p-1.5 shadow-xl backdrop-blur-md md:w-auto">
-              {/* Pinned Mobile 1-Tap Category Sheet Trigger (guarantees all 11 categories accessible on mobile) */}
-              <button
-                type="button"
-                onClick={() => setMobileCatsOpen(true)}
-                className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-[10px] border border-[rgba(212,180,124,0.5)] bg-[#1D2D4B] px-3 text-xs font-medium text-[#E3C58A] whitespace-nowrap transition-colors hover:bg-[#25395E] md:hidden"
-              >
-                <LayoutGrid className="h-3.5 w-3.5" strokeWidth={1.8} />
-                <span>دسته‌ها</span>
-              </button>
-
+            <div className="pointer-events-auto flex h-[52px] w-auto max-w-[1180px] items-center gap-1.5 rounded-[14px] border border-[rgba(244,241,234,0.16)] bg-[#0D1423]/95 p-1.5 shadow-xl backdrop-blur-md">
               <div className="eyvan-scroll-hidden flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
                 {MENU_CATEGORIES.map((category) => {
                   const isActive = category.id === activeCategoryId;

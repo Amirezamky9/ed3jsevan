@@ -66,7 +66,7 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="customize-drawer-title"
-      className="fixed inset-0 z-50 flex justify-start bg-[#070B14]/45 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex justify-start bg-[#070B14]/65"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -103,6 +103,7 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
             <img
               src={item.frontImage}
               alt={item.name}
+              decoding="async"
               referrerPolicy="no-referrer"
               className="h-52 w-full object-cover"
             />

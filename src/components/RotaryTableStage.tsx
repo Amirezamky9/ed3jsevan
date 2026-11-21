@@ -1,4 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { MenuCategory, MenuItem } from '../data/menuData';
 import {
   calculateItemPrice,
@@ -8,7 +16,11 @@ import {
   getWheelSlotPosition,
   toPersianDigits,
 } from '../utils/menuLogic';
-import { easeOutCubic, projectTableSeat } from '../utils/tableProjection';
+import {
+  easeInOutCubic,
+  easeOutQuart,
+  projectTableSeat,
+} from '../utils/tableProjection';
 import { EyvanLogo } from './EyvanLogo';
 
 export type CameraAngle = 'top' | 'front';
@@ -32,21 +44,74 @@ interface AnimatedCameraState {
   cx: number;
   cy: number;
   scale: number;
+  perspective: number;
 }
 
-const PERSPECTIVE_PX = 1400;
-const FOCAL_ANGLE_DEG = 180; // 6 o'clock front-center in BOTH top-down and eye-level modes so camera descends without spinning the drink away!
+const FOCAL_ANGLE_DEG = 180; // 6 o'clock front-center in BOTH top-down and eye-level modes
+
+/**
+ * Returns a subtle colored caustic light-bounce RGBA for translucent iced glassware on white marble.
+ */
+function getGlassCausticTint(cutoutPath: string): string | null {
+  if (cutoutPath.includes('red_mocktail') || cutoutPath.includes('berry_shake')) {
+    return 'rgba(186, 36, 56, 0.22)';
+  }
+  if (
+    cutoutPath.includes('green_mojito') ||
+    cutoutPath.includes('matcha_latte') ||
+    cutoutPath.includes('strawberry_matcha')
+  ) {
+    return 'rgba(54, 152, 74, 0.18)';
+  }
+  if (cutoutPath.includes('blue_spirulina')) {
+    return 'rgba(38, 122, 178, 0.2)';
+  }
+  if (
+    cutoutPath.includes('iced_latte') ||
+    cutoutPath.includes('persian_cold') ||
+    cutoutPath.includes('choco_shake')
+  ) {
+    return 'rgba(175, 126, 62, 0.17)';
+  }
+  return null;
+}
+
+/**
+ * Builds a single zero-blur multi-stop CSS radial-gradient background combining:
+ * 1) Crisp tight ambient-occlusion contact seam directly under the vessel rim
+ * 2) Optional subtle refracted glass caustic tint on white marble
+ * 3) Soft directional studio cast shadow angled gently left-rear
+ * Using pure multi-stop gradients avoids 30+ live CSS blur passes per frame on mobile GPUs.
+ */
+function buildGroundingShadowBackground(causticTint: string | null): string {
+  const layers: string[] = [
+    'radial-gradient(ellipse 30% 24% at 50% 48%, rgba(8, 12, 22, 0.72) 0%, rgba(10, 15, 28, 0.36) 52%, rgba(10, 15, 28, 0) 100%)',
+  ];
+  if (causticTint) {
+    layers.push(
+      `radial-gradient(ellipse 36% 32% at 58% 54%, ${causticTint} 0%, rgba(0, 0, 0, 0) 100%)`,
+    );
+  }
+  layers.push(
+    'radial-gradient(ellipse 46% 42% at 44% 52%, rgba(14, 18, 30, 0.3) 0%, rgba(14, 18, 30, 0.12) 55%, rgba(14, 18, 30, 0) 100%)',
+  );
+  return layers.join(', ');
+}
 
 /**
  * Overhead brushed antique-gold dining cloche SVG rendered cleanly onto the
  * circular marble tabletop for the 3 "Coming Soon" sections (صبحانه، پیش‌غذا، غذای اصلی).
  */
-function ComingSoonClochePlate({ label }: { label: string }) {
+const ComingSoonClochePlate = memo(function ComingSoonClochePlate({
+  label,
+}: {
+  label: string;
+}) {
   return (
     <div className="relative flex h-full w-full items-center justify-center select-none">
       <svg
         viewBox="0 0 260 260"
-        className="h-[88%] w-[88%] drop-shadow-[0_14px_22px_rgba(14,21,37,0.24)]"
+        className="h-[88%] w-[88%]"
         aria-label={`سرویس ${label} به‌زودی`}
       >
         <defs>
@@ -68,6 +133,7 @@ function ComingSoonClochePlate({ label }: { label: string }) {
           </radialGradient>
         </defs>
 
+        <circle cx="130" cy="134" r="109" fill="rgba(14,21,37,0.16)" />
         <circle cx="130" cy="130" r="108" fill="url(#clochePlate)" />
         <circle
           cx="130"
@@ -112,24 +178,32 @@ function ComingSoonClochePlate({ label }: { label: string }) {
       </svg>
     </div>
   );
-}
+});
 
 /**
  * Handcrafted architectural alabaster-marble veining and radial antique-gold inlays
  * baked directly onto the rotating tabletop so every degree of table rotation is unmistakably physical.
  */
-function MarbleTableInlays({ slotCount }: { slotCount: number }) {
+const MarbleTableInlays = memo(function MarbleTableInlays({
+  slotCount,
+}: {
+  slotCount: number;
+}) {
   const safeCount = Math.max(4, slotCount);
-  const spokes = Array.from({ length: safeCount }, (_, i) => {
-    const angleRad = ((i / safeCount) * 360 * Math.PI) / 180;
-    const x1 = 500 + Math.sin(angleRad) * 185;
-    const y1 = 500 - Math.cos(angleRad) * 185;
-    const x2 = 500 + Math.sin(angleRad) * 468;
-    const y2 = 500 - Math.cos(angleRad) * 468;
-    const tx = 500 + Math.sin(angleRad) * 480;
-    const ty = 500 - Math.cos(angleRad) * 480;
-    return { i, x1, y1, x2, y2, tx, ty };
-  });
+  const spokes = useMemo(
+    () =>
+      Array.from({ length: safeCount }, (_, i) => {
+        const angleRad = ((i / safeCount) * 360 * Math.PI) / 180;
+        const x1 = 500 + Math.sin(angleRad) * 186;
+        const y1 = 500 - Math.cos(angleRad) * 186;
+        const x2 = 500 + Math.sin(angleRad) * 468;
+        const y2 = 500 - Math.cos(angleRad) * 468;
+        const tx = 500 + Math.sin(angleRad) * 480;
+        const ty = 500 - Math.cos(angleRad) * 480;
+        return { i, x1, y1, x2, y2, tx, ty };
+      }),
+    [safeCount],
+  );
 
   return (
     <svg
@@ -137,43 +211,43 @@ function MarbleTableInlays({ slotCount }: { slotCount: number }) {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 h-full w-full rounded-full"
     >
-      {/* Subtle asymmetric natural stone veining (gives clear visual motion cues as table revolves) */}
+      {/* Subtle asymmetric natural stone veining */}
       <g fill="none" strokeLinecap="round">
         <path
           d="M 110 340 C 245 310, 310 420, 445 395 C 580 370, 665 245, 865 280"
           stroke="#9E9483"
-          strokeOpacity="0.22"
-          strokeWidth="3.2"
+          strokeOpacity="0.2"
+          strokeWidth="3"
         />
         <path
           d="M 140 358 C 260 335, 325 438, 456 410 C 578 384, 678 272, 845 302"
           stroke="#AF894B"
-          strokeOpacity="0.16"
-          strokeWidth="1.4"
+          strokeOpacity="0.14"
+          strokeWidth="1.3"
         />
         <path
           d="M 180 680 C 310 615, 420 675, 560 620 C 690 570, 770 635, 910 565"
           stroke="#8E8473"
-          strokeOpacity="0.2"
-          strokeWidth="2.8"
+          strokeOpacity="0.18"
+          strokeWidth="2.6"
         />
         <path
           d="M 290 120 C 360 260, 465 310, 485 480 C 505 645, 430 760, 520 910"
           stroke="#9B9180"
-          strokeOpacity="0.16"
-          strokeWidth="2.2"
+          strokeOpacity="0.14"
+          strokeWidth="2"
         />
         <path
           d="M 650 115 C 615 240, 680 355, 620 495 C 565 620, 690 740, 745 875"
           stroke="#AF894B"
-          strokeOpacity="0.14"
-          strokeWidth="1.6"
+          strokeOpacity="0.13"
+          strokeWidth="1.5"
         />
         <path
           d="M 95 535 C 215 490, 295 570, 395 545"
           stroke="#8A806E"
-          strokeOpacity="0.18"
-          strokeWidth="2"
+          strokeOpacity="0.16"
+          strokeWidth="1.8"
         />
       </g>
 
@@ -184,8 +258,8 @@ function MarbleTableInlays({ slotCount }: { slotCount: number }) {
         r="476"
         fill="none"
         stroke="#AF894B"
-        strokeOpacity="0.34"
-        strokeWidth="1.6"
+        strokeOpacity="0.32"
+        strokeWidth="1.5"
       />
       <circle
         cx="500"
@@ -193,7 +267,7 @@ function MarbleTableInlays({ slotCount }: { slotCount: number }) {
         r="464"
         fill="none"
         stroke="#293B5F"
-        strokeOpacity="0.1"
+        strokeOpacity="0.09"
         strokeWidth="1"
       />
       <circle
@@ -202,8 +276,8 @@ function MarbleTableInlays({ slotCount }: { slotCount: number }) {
         r="182"
         fill="none"
         stroke="#AF894B"
-        strokeOpacity="0.26"
-        strokeWidth="1.4"
+        strokeOpacity="0.22"
+        strokeWidth="1.3"
       />
       <circle
         cx="500"
@@ -211,11 +285,11 @@ function MarbleTableInlays({ slotCount }: { slotCount: number }) {
         r="164"
         fill="none"
         stroke="#293B5F"
-        strokeOpacity="0.09"
+        strokeOpacity="0.08"
         strokeWidth="1"
       />
 
-      {/* Radial antique-gold divider lines & rim compass markers that visibly sweep as the table turns */}
+      {/* Radial antique-gold divider lines & rim compass markers */}
       {spokes.map((s) => (
         <g key={s.i}>
           <line
@@ -224,16 +298,16 @@ function MarbleTableInlays({ slotCount }: { slotCount: number }) {
             x2={s.x2}
             y2={s.y2}
             stroke="#AF894B"
-            strokeOpacity="0.16"
-            strokeWidth="1.2"
-            strokeDasharray="4 6"
+            strokeOpacity="0.14"
+            strokeWidth="1.1"
+            strokeDasharray="4 7"
           />
-          <circle cx={s.tx} cy={s.ty} r="3.2" fill="#AF894B" fillOpacity="0.52" />
+          <circle cx={s.tx} cy={s.ty} r="3" fill="#AF894B" fillOpacity="0.48" />
         </g>
       ))}
     </svg>
   );
-}
+});
 
 export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
   category,
@@ -260,6 +334,29 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
   const isFrontCamera =
     cameraAngle === 'front' && !overviewMode && !category.comingSoon;
 
+  // Mount standing cutouts lazily when front camera enters, and keep mounted during exit transition
+  const [standingMounted, setStandingMounted] = useState<boolean>(isFrontCamera);
+
+  useEffect(() => {
+    if (isFrontCamera) {
+      setStandingMounted(true);
+    }
+  }, [isFrontCamera]);
+
+  // Idle-preload the active category's tiny WebP cutouts (~25KB each) so entering Front View is instant
+  useEffect(() => {
+    if (category.comingSoon || items.length === 0) return;
+    const uniqueCutouts = Array.from(new Set(items.map((i) => i.cutoutImage)));
+    const timer = window.setTimeout(() => {
+      for (const src of uniqueCutouts) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      }
+    }, 650);
+    return () => window.clearTimeout(timer);
+  }, [category.id, category.comingSoon, items]);
+
   useEffect(() => {
     const onResize = () => {
       setViewport({ width: window.innerWidth, height: window.innerHeight });
@@ -274,60 +371,62 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
     const vh = viewport.height;
 
     if (vw < 1024) {
-      const tableDiameter = Math.min(468, Math.max(382, vw * 1.16));
+      const tableDiameter = Math.min(460, Math.max(376, vw * 1.14));
       const overviewScale = Math.min(
         (vw - 28) / tableDiameter,
-        (vh - 210) / tableDiameter,
+        (vh - 230) / tableDiameter,
       );
 
-      // Mobile Top-Down: marble arc sweeps cleanly across upper ~42% with ZERO dead void below
-      const topCx = vw * 0.5;
-      const topCy = Math.max(104, vh * 0.145);
-      // Mobile Front Eye-Level: marble slab sits cleanly around y = 36%..46% with generous marble in front & behind glass
-      const frontCx = vw * 0.5;
-      const frontCy = Math.max(226, vh * 0.355);
-      const overviewCx = vw * 0.5;
-      const overviewCy = vh * 0.49;
-
+      // Mobile sits cleanly below the 56px header + 44px top category strip (y = 100px)
       const isCompactPhone = vh < 720;
+      const topCx = vw * 0.5;
+      const topCy = isCompactPhone
+        ? Math.max(134, vh * 0.2)
+        : Math.max(146, vh * 0.185);
+      const frontCx = vw * 0.5;
+      const frontCy = isCompactPhone
+        ? Math.max(262, vh * 0.405)
+        : Math.max(304, vh * 0.415);
+      const overviewCx = vw * 0.5;
+      const overviewCy = vh * 0.53;
 
       return {
         tableDiameter,
         ringRadiusPct: 30.5,
-        dishSize: Math.round(tableDiameter * 0.28),
+        dishSize: Math.round(tableDiameter * 0.275),
         tallCutoutH: Math.round(
           isCompactPhone
-            ? Math.min(168, vh * 0.25)
-            : Math.min(216, Math.max(176, vh * 0.255)),
+            ? Math.min(148, vh * 0.222)
+            : Math.min(194, Math.max(162, vh * 0.23)),
         ),
         cupCutoutH: Math.round(
           isCompactPhone
-            ? Math.min(126, vh * 0.19)
-            : Math.min(156, Math.max(132, vh * 0.185)),
+            ? Math.min(118, vh * 0.175)
+            : Math.min(148, Math.max(126, vh * 0.175)),
         ),
         cx: overviewMode ? overviewCx : isFrontCamera ? frontCx : topCx,
         cy: overviewMode ? overviewCy : isFrontCamera ? frontCy : topCy,
         scale: overviewMode
           ? overviewScale
           : isFrontCamera
-            ? 0.94
-            : 0.96,
+            ? 0.92
+            : 0.94,
         pitch: isFrontCamera ? 72 : 0,
+        perspective: isFrontCamera ? 1320 : 1700,
       };
     }
 
-    // Desktop (>= 1024px)
-    const tableDiameter = Math.min(960, Math.max(760, vw * 0.67));
+    // Desktop (>= 1024px): Push marble turntable firmly to the LEFT
+    // leaving a wide, calm dark-navy editorial zone on the right for Persian typography
+    const tableDiameter = Math.min(920, Math.max(730, vw * 0.64));
     const overviewScale = Math.min(
       (vh - 200) / tableDiameter,
       (vw - 140) / tableDiameter,
-      0.72,
+      0.74,
     );
 
-    // Same horizontal axis (cx) in BOTH Top-Down & Front Camera so the camera smoothly swoops down
-    // right in front of the active drink WITHOUT spinning the table sideways!
-    const stageCx = drawerOpen ? vw * 0.275 : vw * 0.32;
-    const topCy = vh * 0.245;
+    const stageCx = drawerOpen ? vw * 0.195 : vw * 0.245;
+    const topCy = vh * 0.255;
     const frontCy = vh * 0.645;
     const overviewCx = vw * 0.5;
     const overviewCy = vh * 0.51;
@@ -339,16 +438,13 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
       tableDiameter,
       ringRadiusPct: 30.5,
       dishSize: Math.round(tableDiameter * dishRatio),
-      tallCutoutH: Math.round(Math.min(350, Math.max(270, vh * 0.385))),
-      cupCutoutH: Math.round(Math.min(220, Math.max(175, vh * 0.242))),
+      tallCutoutH: Math.round(Math.min(344, Math.max(268, vh * 0.38))),
+      cupCutoutH: Math.round(Math.min(216, Math.max(172, vh * 0.238))),
       cx: overviewMode ? overviewCx : stageCx,
       cy: overviewMode ? overviewCy : isFrontCamera ? frontCy : topCy,
-      scale: overviewMode
-        ? overviewScale
-        : isFrontCamera
-          ? 0.96
-          : 1.02,
+      scale: overviewMode ? overviewScale : isFrontCamera ? 0.94 : 1.0,
       pitch: isFrontCamera ? 71 : 0,
+      perspective: isFrontCamera ? 1340 : 1750,
     };
   }, [
     viewport.width,
@@ -359,7 +455,20 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
     items.length,
   ]);
 
-  // Continuous target turntable wheel angle (180deg = front 6-o'clock seat in BOTH top & front modes)
+  // Direct DOM refs for 100% GPU-composited, ZERO-React-re-render 60fps animation
+  const topGlowRef = useRef<HTMLDivElement | null>(null);
+  const frontGlowRef = useRef<HTMLDivElement | null>(null);
+  const cameraRigRef = useRef<HTMLDivElement | null>(null);
+  const slabEdgeRef = useRef<HTMLDivElement | null>(null);
+  const wheelDiscRef = useRef<HTMLDivElement | null>(null);
+  const standingLayerRef = useRef<HTMLDivElement | null>(null);
+
+  const coasterRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const plateBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const seatWrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const seatShadowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const seatBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
   const targetWheelAngleRef = useRef<number>(
     computeShortestWheelAngle(
       FOCAL_ANGLE_DEG,
@@ -370,17 +479,161 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
   );
   const prevCategoryRef = useRef<string>(category.id);
 
-  // Unified frame-by-frame rAF camera + turntable state (guarantees 0.0px drift between marble coasters and standing drinks!)
-  const [anim, setAnim] = useState<AnimatedCameraState>(() => ({
+  const animRef = useRef<AnimatedCameraState>({
     wheelAngle: targetWheelAngleRef.current,
     pitch: targetGeo.pitch,
     cx: targetGeo.cx,
     cy: targetGeo.cy,
     scale: targetGeo.scale,
-  }));
-  const animRef = useRef<AnimatedCameraState>(anim);
+    perspective: targetGeo.perspective,
+  });
   const rafIdRef = useRef<number | null>(null);
 
+  // Latest metadata ref so the rAF loop always reads current props without triggering re-renders
+  const frameMetaRef = useRef({
+    tableDiameter: targetGeo.tableDiameter,
+    ringRadiusPx: (targetGeo.tableDiameter * targetGeo.ringRadiusPct) / 100,
+    items,
+    activeIndex,
+    overviewMode,
+    isFrontCamera,
+    comingSoon: Boolean(category.comingSoon),
+  });
+  frameMetaRef.current = {
+    tableDiameter: targetGeo.tableDiameter,
+    ringRadiusPx: (targetGeo.tableDiameter * targetGeo.ringRadiusPct) / 100,
+    items,
+    activeIndex,
+    overviewMode,
+    isFrontCamera,
+    comingSoon: Boolean(category.comingSoon),
+  };
+
+  /**
+   * Paints a single animation frame directly onto GPU-composited DOM transforms & opacities.
+   * Zero React setState, zero Layout reflow (left/top/width/height untouched), zero live filter blur!
+   */
+  const paintFrame = useCallback((state: AnimatedCameraState) => {
+    const meta = frameMetaRef.current;
+    const pitchRatio = Math.max(0, Math.min(1, state.pitch / 71));
+    const plateOpacityFactor = Math.max(0, 1 - pitchRatio * 2.15);
+    const standingReveal = Math.max(0, Math.min(1, (pitchRatio - 0.18) / 0.82));
+    const halfD = meta.tableDiameter / 2;
+
+    if (topGlowRef.current) {
+      topGlowRef.current.style.opacity = (1 - pitchRatio).toFixed(3);
+    }
+    if (frontGlowRef.current) {
+      frontGlowRef.current.style.opacity = pitchRatio.toFixed(3);
+    }
+
+    if (cameraRigRef.current) {
+      cameraRigRef.current.style.transform = `translate3d(${(state.cx - halfD).toFixed(2)}px, ${(state.cy - halfD).toFixed(2)}px, 0) perspective(${state.perspective.toFixed(0)}px) rotateX(${state.pitch.toFixed(3)}deg) scale(${state.scale.toFixed(4)})`;
+    }
+
+    if (slabEdgeRef.current) {
+      slabEdgeRef.current.style.opacity = Math.min(1, pitchRatio * 1.4).toFixed(
+        3,
+      );
+    }
+
+    if (wheelDiscRef.current) {
+      wheelDiscRef.current.style.transform = `rotateZ(${state.wheelAngle.toFixed(3)}deg)`;
+    }
+
+    if (!meta.comingSoon) {
+      const count = Math.max(1, meta.items.length);
+      const coasterOpacity = Math.min(1, standingReveal * 1.2).toFixed(3);
+
+      for (let i = 0; i < count; i++) {
+        const coaster = coasterRefs.current[i];
+        if (coaster) {
+          coaster.style.opacity = coasterOpacity;
+        }
+        const plateBtn = plateBtnRefs.current[i];
+        if (plateBtn) {
+          const baseOp = meta.overviewMode
+            ? 1
+            : i === meta.activeIndex
+              ? 1
+              : 0.88;
+          plateBtn.style.opacity = (plateOpacityFactor * baseOp).toFixed(3);
+          plateBtn.style.pointerEvents =
+            meta.isFrontCamera || plateOpacityFactor <= 0.02 ? 'none' : 'auto';
+        }
+      }
+
+      const standingLayer = standingLayerRef.current;
+      if (standingLayer) {
+        const visible = standingReveal > 0.01;
+        standingLayer.style.visibility = visible ? 'visible' : 'hidden';
+
+        if (visible) {
+          const revealScaleY = 0.58 + standingReveal * 0.42;
+          for (let i = 0; i < count; i++) {
+            const wrapper = seatWrapperRefs.current[i];
+            if (!wrapper) continue;
+
+            const item = meta.items[i];
+            const slotAngleDeg = (i / count) * 360;
+            const proj = projectTableSeat({
+              perspectivePx: state.perspective,
+              tableCenterX: state.cx,
+              tableCenterY: state.cy,
+              ringRadiusPx: meta.ringRadiusPx,
+              tableScale: state.scale,
+              pitchDeg: state.pitch,
+              wheelAngleDeg: state.wheelAngle,
+              slotAngleDeg,
+            });
+
+            const seatOpacity =
+              standingReveal *
+              (proj.frontness >= 0.1
+                ? 1
+                : Math.max(0.76, 0.76 + (proj.frontness + 1) * 0.22));
+
+            wrapper.style.transform = `translate3d(${proj.screenX.toFixed(2)}px, ${proj.screenY.toFixed(2)}px, 0)`;
+            wrapper.style.zIndex = String(proj.zIndex);
+            wrapper.style.opacity = seatOpacity.toFixed(3);
+
+            const shadowEl = seatShadowRefs.current[i];
+            if (shadowEl) {
+              shadowEl.style.transform = `translate3d(-50%, -44%, 0) scale(${proj.perspScale.toFixed(4)})`;
+            }
+
+            const btnEl = seatBtnRefs.current[i];
+            if (btnEl) {
+              const isCup = item.vesselType === 'cup';
+              const shiftPct = isCup ? -45.5 : -50;
+              const yOff = isCup ? 3 : 1;
+              const sx = proj.perspScale;
+              const sy = proj.perspScale * revealScaleY;
+              btnEl.style.transform = `translate3d(${shiftPct}%, ${yOff}px, 0) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+            }
+          }
+        }
+      }
+    }
+  }, []);
+
+  // Synchronously paint current refs whenever DOM nodes mount/resize so there is zero 1-frame flash
+  useLayoutEffect(() => {
+    paintFrame(animRef.current);
+  }, [
+    paintFrame,
+    standingMounted,
+    category.id,
+    items.length,
+    activeIndex,
+    overviewMode,
+    isFrontCamera,
+    targetGeo.tableDiameter,
+    targetGeo.tallCutoutH,
+    targetGeo.cupCutoutH,
+  ]);
+
+  // Ref-driven 60fps camera + turntable animation (zero React setState during motion!)
   useEffect(() => {
     const count = Math.max(1, items.length);
     const categoryChanged = prevCategoryRef.current !== category.id;
@@ -407,6 +660,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
       cx: targetGeo.cx,
       cy: targetGeo.cy,
       scale: targetGeo.scale,
+      perspective: targetGeo.perspective,
     };
 
     const reducedMotion =
@@ -420,19 +674,20 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
       }
       const snapped: AnimatedCameraState = {
         ...target,
-        // Keep current pitch smooth even across category switches
         pitch: categoryChanged ? target.pitch : animRef.current.pitch,
       };
       animRef.current = snapped;
-      setAnim(snapped);
+      paintFrame(snapped);
+      if (!isFrontCamera) {
+        setStandingMounted(false);
+      }
       return;
     }
 
     const start: AnimatedCameraState = { ...animRef.current };
     const startTime = performance.now();
-    // Smooth, weighty studio camera & marble turntable glide
-    const pitchChanged = Math.abs(target.pitch - start.pitch) > 1;
-    const durationMs = pitchChanged ? 860 : 760;
+    const isCameraMove = Math.abs(target.pitch - start.pitch) > 1;
+    const durationMs = isCameraMove ? 740 : 620;
 
     if (rafIdRef.current !== null) {
       cancelAnimationFrame(rafIdRef.current);
@@ -440,23 +695,30 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startTime) / durationMs);
-      const e = easeOutCubic(t);
+      const camEase = isCameraMove ? easeInOutCubic(t) : easeOutQuart(t);
+      const wheelEase = easeOutQuart(t);
 
       const current: AnimatedCameraState = {
-        wheelAngle: start.wheelAngle + (target.wheelAngle - start.wheelAngle) * e,
-        pitch: start.pitch + (target.pitch - start.pitch) * e,
-        cx: start.cx + (target.cx - start.cx) * e,
-        cy: start.cy + (target.cy - start.cy) * e,
-        scale: start.scale + (target.scale - start.scale) * e,
+        wheelAngle:
+          start.wheelAngle + (target.wheelAngle - start.wheelAngle) * wheelEase,
+        pitch: start.pitch + (target.pitch - start.pitch) * camEase,
+        cx: start.cx + (target.cx - start.cx) * camEase,
+        cy: start.cy + (target.cy - start.cy) * camEase,
+        scale: start.scale + (target.scale - start.scale) * camEase,
+        perspective:
+          start.perspective + (target.perspective - start.perspective) * camEase,
       };
 
       animRef.current = current;
-      setAnim(current);
+      paintFrame(current);
 
       if (t < 1) {
         rafIdRef.current = requestAnimationFrame(tick);
       } else {
         rafIdRef.current = null;
+        if (!frameMetaRef.current.isFrontCamera) {
+          setStandingMounted(false);
+        }
       }
     };
 
@@ -472,10 +734,13 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
     activeIndex,
     items.length,
     category.id,
+    isFrontCamera,
     targetGeo.pitch,
     targetGeo.cx,
     targetGeo.cy,
     targetGeo.scale,
+    targetGeo.perspective,
+    paintFrame,
   ]);
 
   // Wheel scroll & touch-swipe drag handling on the circular stage
@@ -489,7 +754,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
   const handleStageWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (overviewMode || category.comingSoon || items.length <= 1) return;
     const now = Date.now();
-    if (now - wheelLockRef.current < 320) return;
+    if (now - wheelLockRef.current < 280) return;
     const primary =
       Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
     if (Math.abs(primary) < 18) return;
@@ -508,7 +773,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
     const dy = e.clientY - dragStartRef.current.y;
     dragStartRef.current.active = false;
     const dist = Math.hypot(dx, dy);
-    if (dist < 36) return;
+    if (dist < 34) return;
     if (Math.abs(dx) >= Math.abs(dy)) {
       onStep(dx < 0 ? 1 : -1);
     } else {
@@ -525,12 +790,6 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
   const displayCenterItem = hoveredOverviewItem ?? activeItem;
   const comingSoonSlots = [0, 1, 2, 3];
 
-  // Continuous camera-pitch progress [0 = pure top-down, 1 = full eye-level front]
-  const pitchRatio = Math.max(0, Math.min(1, anim.pitch / 71));
-  const plateOpacityFactor = Math.max(0, 1 - pitchRatio * 2.2);
-  const standingReveal = Math.max(0, Math.min(1, (pitchRatio - 0.16) / 0.84));
-  const ringRadiusPx = (targetGeo.tableDiameter * targetGeo.ringRadiusPct) / 100;
-
   return (
     <div
       onWheel={handleStageWheel}
@@ -539,45 +798,50 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
       aria-label="میز دوّار نمایش محصولات کافه ایوان"
       className="pointer-events-auto absolute inset-0 overflow-hidden select-none touch-pan-y"
     >
-      {/* Subtle studio lighting radial glow behind the focal drink when camera descends */}
+      {/* Static GPU-crossfaded softbox studio backdrop illumination (zero per-frame gradient repaints) */}
       <div
+        ref={topGlowRef}
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            pitchRatio > 0.05
-              ? isMobile
-                ? `radial-gradient(ellipse 76% 42% at 50% 30%, rgba(212, 180, 124, ${(0.22 * pitchRatio).toFixed(3)}) 0%, rgba(14, 21, 37, 0) 70%)`
-                : `radial-gradient(ellipse 46% 58% at ${drawerOpen ? 28 : 32}% 48%, rgba(212, 180, 124, ${(0.18 * pitchRatio).toFixed(3)}) 0%, rgba(14, 21, 37, 0) 68%)`
-              : 'radial-gradient(circle at 32% 48%, rgba(212, 180, 124, 0.08) 0%, rgba(14, 21, 37, 0) 60%)',
+          opacity: isFrontCamera ? 0 : 1,
+          background: `radial-gradient(circle at ${isMobile ? '50% 32%' : '25% 50%'}, rgba(212, 180, 124, 0.08) 0%, rgba(14, 21, 37, 0) 60%)`,
+        }}
+      />
+      <div
+        ref={frontGlowRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: isFrontCamera ? 1 : 0,
+          background: isMobile
+            ? 'radial-gradient(ellipse 74% 40% at 50% 34%, rgba(212, 180, 124, 0.2) 0%, rgba(14, 21, 37, 0) 70%)'
+            : `radial-gradient(ellipse 44% 58% at ${drawerOpen ? 20 : 25}% 48%, rgba(212, 180, 124, 0.18) 0%, rgba(14, 21, 37, 0) 68%)`,
         }}
       />
 
-      {/* LAYER 1 (z-10): True 3D Tilted Rotating Alabaster-Marble Tabletop + Stone Slab Thickness + Coasters + Overhead Plates */}
+      {/* LAYER 1 (z-10): True 3D Tilted Rotating Alabaster-Marble Tabletop + Stone Slab Thickness + Flush Gold Coasters + Overhead Plates */}
       <div className="pointer-events-none absolute inset-0 z-10 isolate">
         <div
-          className="pointer-events-auto absolute will-change-transform"
+          ref={cameraRigRef}
+          className="pointer-events-auto absolute top-0 left-0 will-change-transform"
           style={{
-            left: `${anim.cx}px`,
-            top: `${anim.cy}px`,
             width: `${targetGeo.tableDiameter}px`,
             height: `${targetGeo.tableDiameter}px`,
-            marginLeft: `${-targetGeo.tableDiameter / 2}px`,
-            marginTop: `${-targetGeo.tableDiameter / 2}px`,
             transformStyle: 'preserve-3d',
-            transform: `perspective(${PERSPECTIVE_PX}px) rotateX(${anim.pitch}deg) scale(${anim.scale})`,
           }}
         >
-          {/* Solid 3D Bevelled Alabaster Marble Slab Edge Thickness (emerges naturally as camera lowers!) */}
+          {/* Solid 3D Bevelled Alabaster Marble Slab Edge Thickness */}
           <div
+            ref={slabEdgeRef}
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 rounded-full"
             style={{
               transform: 'translateZ(-18px)',
               background:
                 'linear-gradient(180deg, #D5CEC1 0%, #BDB3A1 50%, #8F8574 100%)',
-              boxShadow: '0 44px 100px rgba(3, 6, 15, 0.82)',
-              opacity: Math.min(1, pitchRatio * 1.4),
+              boxShadow: '0 22px 48px rgba(3, 6, 15, 0.72)',
+              opacity: isFrontCamera ? 1 : 0,
             }}
           />
 
@@ -593,17 +857,15 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
 
           {/* Physically Rotating Circular Alabaster-Marble Disc */}
           <div
+            ref={wheelDiscRef}
             className="eyvan-rotary-table relative h-full w-full rounded-full will-change-transform"
-            style={{
-              transform: `rotateZ(${anim.wheelAngle}deg)`,
-            }}
           >
-            {/* Asymmetric natural stone veining + brass radial compass inlays so the physical table rotation is unmistakably visible */}
+            {/* Asymmetric natural stone veining + brass radial compass inlays */}
             <MarbleTableInlays
               slotCount={category.comingSoon ? 4 : items.length}
             />
 
-            {/* Coasters & Overhead Saucers physically seated ON the rotating marble disc */}
+            {/* Flush Brass Coaster Rings & Overhead Saucers physically seated ON the rotating marble disc */}
             {category.comingSoon
               ? comingSoonSlots.map((slotIdx) => {
                   const pos = getWheelSlotPosition(
@@ -642,7 +904,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
                     : isActive
                       ? isMobile
                         ? 1.16
-                        : 1.34
+                        : 1.32
                       : 0.92;
                   const isBroken = Boolean(brokenImages[item.id]);
 
@@ -659,27 +921,29 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
                         zIndex: isActive || isHovered ? 20 : 10,
                       }}
                     >
-                      {/* Recessed Brass-Rimmed Marble Coaster physically inlaid into the rotating tabletop */}
+                      {/* Delicate Flush Inlaid Gold Coaster Hairline */}
                       <div
+                        ref={(el) => {
+                          coasterRefs.current[idx] = el;
+                        }}
                         aria-hidden="true"
                         className="pointer-events-none absolute top-1/2 left-1/2 rounded-full"
                         style={{
-                          width: item.vesselType === 'tall' ? '44%' : '58%',
-                          height: item.vesselType === 'tall' ? '44%' : '58%',
+                          width: item.vesselType === 'tall' ? '42%' : '56%',
+                          height: item.vesselType === 'tall' ? '42%' : '56%',
                           transform: 'translate(-50%, -50%)',
-                          background:
-                            'radial-gradient(circle at 42% 38%, rgba(250, 248, 243, 0.95) 0%, rgba(226, 219, 206, 0.85) 75%, rgba(202, 192, 174, 0.78) 100%)',
                           border: isActive
-                            ? '1.6px solid rgba(175, 137, 75, 0.62)'
-                            : '1.2px solid rgba(175, 137, 75, 0.34)',
-                          boxShadow:
-                            'inset 0 2px 6px rgba(14, 21, 37, 0.14), 0 1px 2px rgba(255, 255, 255, 0.7)',
-                          opacity: Math.min(1, standingReveal * 1.25),
+                            ? '1.2px solid rgba(175, 137, 75, 0.44)'
+                            : '1px solid rgba(175, 137, 75, 0.24)',
+                          opacity: isFrontCamera ? 1 : 0,
                         }}
                       />
 
-                      {/* Overhead 90° Studio Plate (smoothly cross-fades out as camera glides down to eye-level) */}
+                      {/* Overhead 90° Studio Plate */}
                       <button
+                        ref={(el) => {
+                          plateBtnRefs.current[idx] = el;
+                        }}
                         type="button"
                         onClick={() => {
                           if (overviewMode) {
@@ -704,18 +968,11 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
                             : `${item.name} — انتخاب روی میز`
                         }
                         aria-pressed={isActive}
-                        className={`group absolute inset-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#293B5F] ${
-                          isFrontCamera || plateOpacityFactor <= 0.02
-                            ? 'pointer-events-none'
-                            : 'cursor-pointer'
-                        }`}
+                        className="group absolute inset-0 cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#293B5F]"
                         style={{
                           transform: `scale(${plateScale})`,
                           transition:
-                            'transform 520ms cubic-bezier(0.22, 1, 0.36, 1)',
-                          opacity:
-                            plateOpacityFactor *
-                            (overviewMode ? 1 : isActive ? 1 : 0.88),
+                            'transform 460ms cubic-bezier(0.22, 1, 0.36, 1)',
                         }}
                       >
                         {overviewMode && (isActive || isHovered) && (
@@ -729,6 +986,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
                           <img
                             src={item.image}
                             alt={item.name}
+                            decoding="async"
                             referrerPolicy="no-referrer"
                             draggable={false}
                             onError={() =>
@@ -800,82 +1058,81 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
         </div>
       </div>
 
-      {/* LAYER 2 (z-20): Mathematically Projected Background-Free Standing Drinks
-          Every glass/cup base is locked to 0.0px precision onto its rotating marble coaster
-          with grounded contact shadow + continuous optical depth-of-field bokeh! */}
-      {!category.comingSoon && standingReveal > 0.01 && (
-        <div className="pointer-events-none absolute inset-0 z-20 isolate">
+      {/* LAYER 2 (z-20): Mathematically Projected GPU-Composited Standing Drinks
+          Zero-blur feathered studio grounding shadows + cached static depth-of-field bokeh */}
+      {!category.comingSoon && standingMounted && (
+        <div
+          ref={standingLayerRef}
+          className="pointer-events-none absolute inset-0 z-20 isolate"
+          style={{ visibility: 'hidden' }}
+        >
           {items.map((item, idx) => {
-            const slotAngleDeg = (idx / Math.max(1, items.length)) * 360;
-            const proj = projectTableSeat({
-              perspectivePx: PERSPECTIVE_PX,
-              tableCenterX: anim.cx,
-              tableCenterY: anim.cy,
-              ringRadiusPx,
-              tableScale: anim.scale,
-              pitchDeg: anim.pitch,
-              wheelAngleDeg: anim.wheelAngle,
-              slotAngleDeg,
-            });
+            const rawDiff = Math.abs(idx - activeIndex);
+            const ringDist = Math.min(rawDiff, items.length - rawDiff);
+
+            // On mobile phones, cull distant rear glasses (ringDist >= 3) to slash GPU layers by ~45%
+            if (isMobile && items.length > 5 && ringDist > 2) {
+              seatWrapperRefs.current[idx] = null;
+              seatShadowRefs.current[idx] = null;
+              seatBtnRefs.current[idx] = null;
+              return null;
+            }
 
             const isActive = idx === activeIndex;
-            const baseHeight =
-              item.vesselType === 'tall'
-                ? targetGeo.tallCutoutH
-                : targetGeo.cupCutoutH;
-            // True 3D perspective foreshortening: closer front drink is naturally larger, rear drinks shrink smoothly
-            const drinkHeight = baseHeight * proj.perspScale;
-            // Subtle optical centering for handled ceramic cups so the cup body sits dead-center on its coaster
-            const handleCenterShiftPct = item.vesselType === 'cup' ? -46 : -50;
-            // Tight physical contact shadow footprint matched to tall glass vs ceramic cup base
-            const contactWidthPx =
-              (item.vesselType === 'tall' ? baseHeight * 0.34 : baseHeight * 0.72) *
-              proj.perspScale;
-            const contactHeightPx = Math.max(10, contactWidthPx * 0.24);
+            const isCup = item.vesselType === 'cup';
+            const baseHeight = isCup
+              ? targetGeo.cupCutoutH
+              : targetGeo.tallCutoutH;
+            const baseFootW = isCup ? baseHeight * 0.64 : baseHeight * 0.29;
+            const shadowBoxW = Math.round(baseFootW * 1.9);
+            const shadowBoxH = Math.round(Math.max(24, baseFootW * 0.52));
+            const causticTint = isCup
+              ? null
+              : getGlassCausticTint(item.cutoutImage);
+            const shadowBg = buildGroundingShadowBackground(causticTint);
 
-            // Fade only far-back items very subtly; keep front & adjacent drinks 100% solid opaque so marble never ghosts through!
-            const seatOpacity =
-              standingReveal *
-              (proj.frontness >= 0.25
-                ? 1
-                : Math.max(0.55, 0.55 + (proj.frontness + 1) * 0.36));
+            // Static cached optical bokeh by discrete ring distance (GPU caches bitmap once -> locked 60fps!)
+            const cachedImgFilter =
+              ringDist === 0
+                ? 'brightness(1) saturate(1.03) contrast(1.03)'
+                : ringDist === 1
+                  ? 'blur(1.4px) brightness(0.95) saturate(0.93) contrast(1.02)'
+                  : 'blur(2.6px) brightness(0.89) saturate(0.87) contrast(1.01)';
 
             return (
               <div
                 key={`projected-${item.id}`}
-                className="pointer-events-none absolute top-0 left-0 will-change-transform"
-                style={{
-                  transform: `translate3d(${proj.screenX.toFixed(2)}px, ${proj.screenY.toFixed(2)}px, 0)`,
-                  zIndex: proj.zIndex,
-                  opacity: seatOpacity,
+                ref={(el) => {
+                  seatWrapperRefs.current[idx] = el;
                 }}
+                className="pointer-events-none absolute top-0 left-0 will-change-transform"
               >
-                {/* Grounded Ambient-Occlusion Contact Shadow right where glass/ceramic base meets marble */}
+                {/* Unified 3-Layer Zero-Blur Grounding Shadow (Contact Seam + Caustic Bounce + Studio Cast) */}
                 <div
+                  ref={(el) => {
+                    seatShadowRefs.current[idx] = el;
+                  }}
                   aria-hidden="true"
-                  className="pointer-events-none absolute top-0 left-0 rounded-full"
+                  className="pointer-events-none absolute top-0 left-0 will-change-transform"
                   style={{
-                    width: `${contactWidthPx.toFixed(1)}px`,
-                    height: `${contactHeightPx.toFixed(1)}px`,
-                    transform: 'translate(-50%, -45%)',
-                    background:
-                      'radial-gradient(ellipse at center, rgba(10, 15, 28, 0.58) 0%, rgba(10, 15, 28, 0.28) 52%, rgba(10, 15, 28, 0) 78%)',
-                    filter:
-                      proj.blurPx > 0
-                        ? `blur(${(proj.blurPx * 0.65 + 1.5).toFixed(1)}px)`
-                        : 'blur(1.5px)',
+                    width: `${shadowBoxW}px`,
+                    height: `${shadowBoxH}px`,
+                    transformOrigin: '50% 50%',
+                    backgroundImage: shadowBg,
                   }}
                 />
 
-                {/* Standing Background-Free Cutout Glass / Ceramic Cup anchored firmly ON the coaster */}
+                {/* Standing Background-Free Cutout Glass / Cup (100% GPU transform scaling, zero Layout reflow) */}
                 <button
+                  ref={(el) => {
+                    seatBtnRefs.current[idx] = el;
+                  }}
                   type="button"
                   onClick={() => {
                     if (!isFrontCamera) return;
                     if (isActive) {
                       onChangeCameraAngle('top');
                     } else {
-                      // Clicking any blurred neighbor glass revolves the marble table to bring it to front focus!
                       onSelectIndex(idx);
                     }
                   }}
@@ -886,27 +1143,22 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
                       ? `${item.name} — بازگشت به نمای بالا`
                       : `${item.name} — چرخاندن میز و نمایش از روبه‌رو`
                   }
-                  className="pointer-events-auto absolute bottom-0 left-0 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline-none"
+                  className="pointer-events-auto absolute bottom-0 left-0 cursor-pointer border-0 bg-transparent p-0 will-change-transform focus-visible:outline-none"
                   style={{
-                    height: `${drinkHeight.toFixed(1)}px`,
+                    height: `${baseHeight}px`,
                     width: 'auto',
-                    transformOrigin: '50% 100%',
-                    transform: `translate(${handleCenterShiftPct}%, ${
-                      item.vesselType === 'cup' ? '4px' : '2px'
-                    }) scaleY(${(0.55 + standingReveal * 0.45).toFixed(3)})`,
+                    transformOrigin: isCup ? '45.5% 100%' : '50% 100%',
                   }}
                 >
                   <img
                     src={item.cutoutImage}
                     alt={`نمای روبه‌رو ${item.name}`}
+                    decoding="async"
                     referrerPolicy="no-referrer"
                     draggable={false}
                     className="block h-full w-auto max-w-none select-none object-contain pointer-events-none"
                     style={{
-                      filter:
-                        proj.blurPx > 0
-                          ? `blur(${proj.blurPx}px) brightness(${proj.brightness}) saturate(${proj.saturate}) drop-shadow(0 8px 12px rgba(8,12,24,0.28))`
-                          : `brightness(${proj.brightness}) saturate(${proj.saturate}) drop-shadow(0 10px 16px rgba(8,12,24,0.32))`,
+                      filter: cachedImgFilter,
                     }}
                   />
                 </button>
@@ -916,7 +1168,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
         </div>
       )}
 
-      {/* Subtle Rising Steam Overlay positioned over the focal hot beverage (Top-Down Hero Mode only) */}
+      {/* Subtle Rising Steam Overlay positioned over the focal hot beverage (Top-Down Desktop Hero Mode only) */}
       {!overviewMode &&
         !isFrontCamera &&
         !category.comingSoon &&
@@ -926,7 +1178,7 @@ export const RotaryTableStage: React.FC<RotaryTableStageProps> = ({
             aria-hidden="true"
             className="pointer-events-none absolute z-30 flex gap-3 opacity-75"
             style={{
-              left: drawerOpen ? '27.5%' : '32%',
+              left: drawerOpen ? '19.5%' : '24.5%',
               top: '51%',
               transform: 'translate(-50%, -50%)',
             }}

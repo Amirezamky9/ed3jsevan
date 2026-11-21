@@ -17,7 +17,7 @@ export interface TableProjectionInput {
   ringRadiusPx: number;
   /** Uniform table scale factor */
   tableScale: number;
-  /** Camera pitch tilt in degrees: 0 = straight overhead, ~72 = eye-level front */
+  /** Camera pitch tilt in degrees: 0 = straight overhead, ~71 = eye-level front */
   pitchDeg: number;
   /** Current continuous turntable rotation angle in degrees */
   wheelAngleDeg: number;
@@ -36,9 +36,9 @@ export interface ProjectedSeat {
   depthZ: number;
   /** Normalized depth in [-1, 1]: +1 is dead-front (6 o'clock), -1 is dead-back (12 o'clock) */
   frontness: number;
-  /** Optical depth-of-field blur in pixels (0 at front focus, smoothly increasing toward sides/back) */
+  /** Subtle, natural optical depth-of-field blur in pixels (0 at front focus, gentle ~1.5px on sides, max ~4.2px at far rear) */
   blurPx: number;
-  /** Studio light falloff brightness multiplier (1.03 at front focus -> 0.56 at rear) */
+  /** Subtle studio light falloff brightness multiplier (1.02 at front focus -> 0.78 at far rear) */
   brightness: number;
   /** Saturation multiplier for subtle atmospheric depth */
   saturate: number;
@@ -83,18 +83,18 @@ export function projectTableSeat(input: TableProjectionInput): ProjectedSeat {
   // frontness = +1 when seat is at frontmost 6-o'clock rim (localY = +scaledR), -1 at 12-o'clock
   const frontness = scaledR > 0 ? Math.max(-1, Math.min(1, localY / scaledR)) : 1;
 
-  // Optical depth-of-field curve:
+  // Refined, subtle optical depth-of-field curve:
   // - frontness >= 0.94 (focal seat dead front): crisp 0px blur
-  // - frontness ~0.6..0.8 (adjacent left/right seats on marble rim): soft 3.2..4.8px bokeh
-  // - frontness <= 0 (rear half of table): 6.5..9.5px creamy bokeh
+  // - adjacent left/right seats (frontness ~0.65..0.8): light 1.2..1.7px softness (clearly recognizable, never smeared)
+  // - far rear rim (frontness ~ -1): gentle 4.2px bokeh
   const focusGap = Math.max(0, 1 - frontness);
   const blurPx =
     focusGap < 0.04
       ? 0
-      : Number(Math.min(9.5, Math.pow(focusGap, 0.72) * 8.4).toFixed(2));
+      : Number(Math.min(4.2, Math.pow(focusGap, 0.78) * 2.45).toFixed(2));
 
-  const brightness = Number((1.03 - focusGap * 0.24).toFixed(3));
-  const saturate = Number((1.04 - focusGap * 0.16).toFixed(3));
+  const brightness = Number((1.02 - focusGap * 0.12).toFixed(3));
+  const saturate = Number((1.03 - focusGap * 0.08).toFixed(3));
   const zIndex = Math.round(rotZ + 2000);
 
   return {
@@ -111,9 +111,27 @@ export function projectTableSeat(input: TableProjectionInput): ProjectedSeat {
 }
 
 /**
- * Smooth cubic ease-out helper for frame-by-frame camera & turntable motion.
+ * Smooth cubic ease-out helper for snappy yet weighty turntable spins.
  */
 export function easeOutCubic(t: number): number {
   const clamped = Math.max(0, Math.min(1, t));
   return 1 - Math.pow(1 - clamped, 3);
+}
+
+/**
+ * Cinematic S-curve ease for smooth crane-like 3D camera descent and ascent.
+ */
+export function easeInOutCubic(t: number): number {
+  const clamped = Math.max(0, Math.min(1, t));
+  return clamped < 0.5
+    ? 4 * clamped * clamped * clamped
+    : 1 - Math.pow(-2 * clamped + 2, 3) / 2;
+}
+
+/**
+ * Tactile quartic ease-out for Lazy Susan turntable spins with natural deceleration.
+ */
+export function easeOutQuart(t: number): number {
+  const clamped = Math.max(0, Math.min(1, t));
+  return 1 - Math.pow(1 - clamped, 4);
 }
