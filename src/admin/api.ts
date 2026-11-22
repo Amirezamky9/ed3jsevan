@@ -9,6 +9,8 @@ import type {
   AdminCategory,
   AdminItem,
   CafeInfoEditable,
+  CleanupPreview,
+  CleanupResult,
   FeaturedPick,
   MenuState,
   NewCategoryInput,
@@ -324,6 +326,18 @@ export class MockAdminApi implements AdminApi {
     await delay();
     if (current.trim().length === 0 || next.trim().length < 6) return false;
     return true;
+  }
+
+  async getCleanupPreview(): Promise<CleanupPreview> {
+    await delay();
+    // Mock mode has no uploads directory, so there is never anything to
+    // clean; the real preview arrives with the PHP backend.
+    return { orphans: [], totalBytes: 0, totalFiles: 0 };
+  }
+
+  async cleanupUploads(): Promise<CleanupResult> {
+    await delay();
+    return { deleted: [], freedBytes: 0, deletedCount: 0 };
   }
 
   async exportBackup(): Promise<string> {

@@ -29,12 +29,14 @@ final class Api
     private Database $db;
     private MenuStore $store;
     private Uploads $uploads;
+    private UploadCleanup $cleanup;
 
     public function __construct(private array $config)
     {
         $this->db = new Database($config['db_path'], $config['app_dir']);
         $this->store = new MenuStore($this->db);
         $this->uploads = new Uploads($config['uploads_dir'], $config['uploads_url']);
+        $this->cleanup = new UploadCleanup($config['uploads_dir'], $config['uploads_url'], $this->store);
     }
 
     public static function handle(string $appDir, array $overrides = []): void
@@ -135,6 +137,16 @@ final class Api
         }
         if ($method === 'POST' && $path === '/admin/upload') {
             $this->upload();
+            return;
+        }
+        // Orphaned-upload garbage collection: GET only lists, POST deletes.
+        // Both sit behind the same /admin/* auth gate as the other routes.
+        if ($method === 'GET' && $path === '/admin/cleanup-uploads') {
+            $this->json(200, $this->cleanup->preview());
+            return;
+        }
+        if ($method === 'POST' && $path === '/admin/cleanup-uploads') {
+            $this->json(200, $this->cleanup->deleteOrphans());
             return;
         }
 

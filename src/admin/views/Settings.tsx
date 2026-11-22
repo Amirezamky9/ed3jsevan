@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { DatabaseBackup, KeyRound, Loader2, Search } from 'lucide-react';
+import { DatabaseBackup, KeyRound, Loader2, Search, Trash2 } from 'lucide-react';
 import { adminApi } from '../api';
-import type { SeoMeta } from '../types';
+import type { CleanupPreview, SeoMeta } from '../types';
 import { PageHeader } from '../components/PageHeader';
 import { Alert } from '../../components/ui/alert';
 import { Button } from '../../components/ui/button';
@@ -32,6 +32,10 @@ export function SettingsView() {
   const [seoSaving, setSeoSaving] = useState(false);
 
   const [backingUp, setBackingUp] = useState(false);
+
+  const [preview, setPreview] = useState<CleanupPreview | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,6 +99,37 @@ export function SettingsView() {
     }
   };
 
+  const checkCleanup = async () => {
+    setChecking(true);
+    try {
+      const result = await adminApi.getCleanupPreview();
+      setPreview(result);
+      if (result.totalFiles === 0) {
+        toast({ title: 'عکس اضافی پیدا نشد', variant: 'success' });
+      }
+    } catch {
+      toast({ title: 'بررسی عکس‌های اضافی ناموفق بود', variant: 'error' });
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  const doCleanup = async () => {
+    setCleaning(true);
+    try {
+      const result = await adminApi.cleanupUploads();
+      setPreview(null);
+      toast({
+        title: `${result.deletedCount.toLocaleString('fa-IR')} فایل حذف شد — ${formatBytes(result.freedBytes)} آزاد شد`,
+        variant: 'success',
+      });
+    } catch {
+      toast({ title: 'پاک‌سازی عکس‌ها ناموفق بود', variant: 'error' });
+    } finally {
+      setCleaning(false);
+    }
+  };
+
   const downloadBackup = async () => {
     setBackingUp(true);
     try {
@@ -121,7 +156,7 @@ export function SettingsView() {
     <div className="space-y-4">
       <PageHeader
         title="تنظیمات"
-        description="رمز عبور، سئوی صفحه منو و بک‌آپ."
+        description="رمز عبور، سئوی صفحه منو، بک‌آپ و پاک‌سازی عکس‌ها."
       />
 
       <Card>
@@ -244,6 +279,67 @@ export function SettingsView() {
           </Button>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Trash2 className="size-5" />
+            پاک‌سازی عکس‌های اضافی
+          </CardTitle>
+          <CardDescription>
+            وقتی عکس یک آیتم عوض می‌شود، فایل قبلی روی سرور می‌ماند. این بخش
+            عکس‌هایی را که نه در پیش‌نویس و نه در نسخه منتشرشده استفاده
+            شده‌اند و بیش از ۲۴ ساعت از آپلودشان گذشته پیدا می‌کند؛ عکس‌های
+            تازه‌تر (کمتر از ۲۴ ساعت) همیشه نگه داشته می‌شوند تا آپلودی که
+            هنوز ذخیره نشده اشتباه حذف نشود.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => void checkCleanup()}
+              disabled={checking || cleaning}
+            >
+              {checking && <Loader2 className="size-4 animate-spin" />}
+              بررسی عکس‌های اضافی
+            </Button>
+            {preview !== null && preview.totalFiles > 0 && (
+              <Button
+                variant="destructive"
+                onClick={() => void doCleanup()}
+                disabled={checking || cleaning}
+              >
+                {cleaning && <Loader2 className="size-4 animate-spin" />}
+                حذف {preview.totalFiles.toLocaleString('fa-IR')} فایل (
+                {formatBytes(preview.totalBytes)})
+              </Button>
+            )}
+          </div>
+          {preview !== null && preview.totalFiles === 0 && (
+            <Alert variant="success">عکس اضافی برای حذف نیست.</Alert>
+          )}
+          {preview !== null && preview.totalFiles > 0 && (
+            <p className="text-sm text-muted-foreground">
+              {preview.totalFiles.toLocaleString('fa-IR')} فایل اضافی (
+              {formatBytes(preview.totalBytes)}) — قدیمی‌ترین{' '}
+              {preview.orphans[0]?.ageDays.toLocaleString('fa-IR')} روز پیش
+              آپلود شده است. فقط همین فایل‌ها حذف می‌شوند؛ عکس‌هایی که در
+              منو استفاده شده‌اند دست نمی‌خورند.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
+}
+
+/** Bytes → «۱۲۳ کیلوبایت» / «۲٫۴ مگابایت» با ارقام فارسی. */
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) {
+    return `${Math.max(1, Math.round(bytes / 1024)).toLocaleString('fa-IR')} کیلوبایت`;
+  }
+  return `${(bytes / (1024 * 1024)).toLocaleString('fa-IR', {
+    maximumFractionDigits: 1,
+  })} مگابایت`;
 }

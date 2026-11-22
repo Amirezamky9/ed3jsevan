@@ -59,6 +59,32 @@ export interface PublishState {
   lastPublishedAt: string | null;
 }
 
+/** One orphaned upload file, as listed by the cleanup preview. */
+export interface CleanupOrphan {
+  /** File name inside the uploads directory. */
+  file: string;
+  /** Size in bytes. */
+  size: number;
+  /** Age in days (one decimal). */
+  ageDays: number;
+}
+
+/** GET /api/admin/cleanup-uploads — the orphan preview. */
+export interface CleanupPreview {
+  orphans: CleanupOrphan[];
+  /** Total size of the orphans, in bytes. */
+  totalBytes: number;
+  totalFiles: number;
+}
+
+/** POST /api/admin/cleanup-uploads — what the delete removed. */
+export interface CleanupResult {
+  deleted: { file: string; size: number }[];
+  /** Bytes freed, in bytes. */
+  freedBytes: number;
+  deletedCount: number;
+}
+
 /** The whole menu state: everything the admin edits, in one snapshot. */
 export interface MenuState {
   categories: AdminCategory[];
@@ -159,4 +185,8 @@ export interface AdminApi {
   changePassword(current: string, next: string): Promise<boolean>;
   /** GET /api/admin/backup — the whole store as a JSON string. */
   exportBackup(): Promise<string>;
+  /** GET /api/admin/cleanup-uploads — orphaned photos (preview only). */
+  getCleanupPreview(): Promise<CleanupPreview>;
+  /** POST /api/admin/cleanup-uploads — delete the orphaned photos. */
+  cleanupUploads(): Promise<CleanupResult>;
 }

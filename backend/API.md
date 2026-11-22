@@ -27,7 +27,9 @@ backend/
   src/MenuStore.php           draft/published snapshot CRUD
   src/Api.php                 route dispatch + JSON in/out + error handling
   src/Uploads.php             photo upload handling
+  src/UploadCleanup.php       orphaned-upload garbage collection
   src/seed.php                seed loader — reads backend/seed/seed.json
+  scripts/cleanup-uploads.php CLI for the orphan cleanup (dry-run by default)
   seed/seed.json              initial MenuState (draft == published on first run)
   setup.php                   CLI first-run password setup
   tests/smoke.sh              curl smoke test against a `php -S` instance
@@ -346,6 +348,50 @@ Rules:
 > (PNG/WebP). Background removal is NOT part of this backend** — the admin
 > prepares the cutout (e.g. in a photo editor) before uploading.
 
+### Upload cleanup
+
+Replacing a photo never overwrites the old file (uploads get unique
+filenames), so the previous file stays in the uploads directory until
+something deletes it. The cleanup endpoints do that; the same logic is
+available as a CLI script (`backend/scripts/cleanup-uploads.php`, dry-run
+by default, `--confirm` deletes) for a cron job — see `DEPLOY.md`.
+
+#### `GET /api/admin/cleanup-uploads`
+Preview only — lists the orphaned files, deletes nothing. Response 200:
+
+```json
+{
+  "orphans": [{ "file": "<sha256>-<ts>-<rand>.png", "size": 12345, "ageDays": 3.2 }],
+  "totalBytes": 12345,
+  "totalFiles": 1
+}
+```
+
+#### `POST /api/admin/cleanup-uploads`
+Deletes every file the preview lists and reports what went. Response
+200:
+
+```json
+{
+  "deleted": [{ "file": "<sha256>-<ts>-<rand>.png", "size": 12345 }],
+  "freedBytes": 12345,
+  "deletedCount": 1
+}
+```
+
+Safety rules (see `src/UploadCleanup.php`):
+
+- **Only image files** (`webp`/`png`/`jpg`/`jpeg`) inside the uploads
+  directory are candidates — a stray `.htaccess` or `index.html` is
+  left alone.
+- **A file is an orphan only when no draft or published item references
+  its URL** in any photo slot. The published snapshot still shows the
+  old photo until the admin publishes, so checking the draft alone
+  would delete live photos.
+- **24-hour grace window:** an unreferenced file younger than 24h is
+  kept — the upload lands on disk before the PATCH that attaches it,
+  and a concurrent cleanup must never eat an in-flight upload.
+
 ## Storage
 
 SQLite, one file (`EYVAN_DB_PATH`). Schema:
@@ -422,9 +468,10 @@ full round-trip with curl: first-run setup (works once, 403 the second
 time), login (good + bad password), public + admin menu (401 without a
 token), edit → publish → discard (verifying `hasDraft` flips and the
 published content changes), photo upload (unique filename + URL), JSON
-backup, SQLite backup download, 404/409 messages, change-password, and
-create/delete + the remaining write endpoints. Exits non-zero on any
-failure; nothing is written to the repo.
+backup, SQLite backup download, 404/409 messages, change-password,
+create/delete + the remaining write endpoints, and the upload cleanup
+(grace window, preview, delete, referenced photos kept, 401 without a
+token). Exits non-zero on any failure; nothing is written to the repo.
 
 For manual exploration:
 

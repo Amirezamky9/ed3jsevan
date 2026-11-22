@@ -3,6 +3,8 @@ import type {
   AdminCategory,
   AdminItem,
   CafeInfoEditable,
+  CleanupPreview,
+  CleanupResult,
   FeaturedPick,
   MenuState,
   NewCategoryInput,
@@ -309,6 +311,18 @@ export class RealAdminApi implements AdminApi {
       throw new Error(message ?? 'خطایی رخ داد؛ دوباره تلاش کنید.');
     }
     return true;
+  }
+
+  async getCleanupPreview(): Promise<CleanupPreview> {
+    return this.request<CleanupPreview>('/admin/cleanup-uploads');
+  }
+
+  async cleanupUploads(): Promise<CleanupResult> {
+    // Plain request(), not mutate(): deleting orphan files changes no
+    // menu state, so the publish badge has nothing to refresh.
+    return this.request<CleanupResult>('/admin/cleanup-uploads', {
+      method: 'POST',
+    });
   }
 
   async exportBackup(): Promise<string> {

@@ -228,6 +228,45 @@ expect_eq "20. POST /admin/items/reorder -> 200" "200" "$code"
 code="$(req POST /admin/categories/reorder "{\"orderedIds\":[\"$CAT_ID\"]}" "$TOKEN")"
 expect_eq "20. POST /admin/categories/reorder -> 200" "200" "$code"
 
+# --- 21. upload cleanup (orphan garbage collection) -----------------------
+# Section 13's upload was never attached to an item: it is an orphan, but
+# fresh (inside the 24h grace window), so the preview must NOT list it.
+code="$(req GET /admin/cleanup-uploads "" "$TOKEN")"
+expect_eq "21. GET /admin/cleanup-uploads -> 200" "200" "$code"
+expect_not_contains "21. fresh orphan is inside the grace window" "$BODY" "$BASENAME"
+# Age it past the grace window: now it must appear in the preview.
+touch -d '3 days ago' "$UPLOADS_DIR/$BASENAME"
+code="$(req GET /admin/cleanup-uploads "" "$TOKEN")"
+expect_eq "21. preview after aging -> 200" "200" "$code"
+expect_contains "21. aged orphan appears in the preview" "$BODY" "$BASENAME"
+expect_eq "21. preview counts 1 orphan" "1" "$(jget "$BODY" totalFiles)"
+# Attach a second upload to the item and publish: the attached photo must
+# never be listed as an orphan.
+code="$(curl -s -o "$BODY" -w '%{http_code}' -X POST "$BASE/admin/upload" \
+  -H "Authorization: Bearer $TOKEN" -F "file=@$PNG;type=image/png" -F "slot=image")"
+expect_eq "21. second upload -> 201" "201" "$code"
+URL2="$(jget "$BODY" url)"
+BASENAME2="$(basename "$URL2")"
+code="$(req PATCH "/admin/items/$ITEM_ID" "{\"image\":\"$URL2\"}" "$TOKEN")"
+expect_eq "21. PATCH item image -> 200" "200" "$code"
+code="$(req POST /admin/publish "" "$TOKEN")"
+expect_eq "21. publish with the new photo -> 200" "200" "$code"
+code="$(req GET /admin/cleanup-uploads "" "$TOKEN")"
+expect_not_contains "21. referenced photo is never an orphan" "$BODY" "$BASENAME2"
+# Delete: the aged orphan goes, the referenced photo stays.
+code="$(req POST /admin/cleanup-uploads "" "$TOKEN")"
+expect_eq "21. POST /admin/cleanup-uploads -> 200" "200" "$code"
+expect_contains "21. delete reports the orphan" "$BODY" "$BASENAME"
+expect_eq "21. delete counts 1 file" "1" "$(jget "$BODY" deletedCount)"
+if [ ! -f "$UPLOADS_DIR/$BASENAME" ]; then ok "21. orphan file deleted from disk"; else bad "21. orphan file deleted from disk"; fi
+if [ -f "$UPLOADS_DIR/$BASENAME2" ]; then ok "21. referenced photo kept on disk"; else bad "21. referenced photo kept on disk"; fi
+# Second run: nothing left to clean.
+code="$(req GET /admin/cleanup-uploads "" "$TOKEN")"
+expect_eq "21. preview is empty after cleanup" "0" "$(jget "$BODY" totalFiles)"
+# Auth: no token -> 401.
+code="$(req GET /admin/cleanup-uploads)"
+expect_eq "21. GET /admin/cleanup-uploads (no token) -> 401" "401" "$code"
+
 echo
 echo "Smoke test: $PASS passed, $FAIL failed."
 [ "$FAIL" -eq 0 ]

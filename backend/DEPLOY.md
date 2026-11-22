@@ -148,3 +148,29 @@ Run through these on the live domain before handing the site over:
    data immediately (the `no-store` headers in §3 guarantee this).
 7. **(Optional, SSH)** — run `bash /home/<user>/eyvan/app/tests/smoke.sh`
    against the live domain for the automated version of this checklist.
+
+## 8. Orphaned-upload cleanup (cron)
+
+Every photo upload stores a **new unique file** and never overwrites the
+old one, so replacing a photo leaves the previous file in
+`public_html/uploads/` forever. On a disk-limited shared host those
+orphans add up; clean them two ways:
+
+- **From the panel** — Settings → «پاک‌سازی عکس‌های اضافی»: «بررسی»
+  lists the orphans (file + size), «حذف» deletes them. Nothing is
+  deleted without the preview first.
+- **From cron (recommended)** — nightly, after the panel is closed:
+
+  ```cron
+  0 4 * * * /usr/bin/php /home/<user>/eyvan/app/scripts/cleanup-uploads.php --confirm >> /home/<user>/eyvan/data/cleanup.log 2>&1
+  ```
+
+  Run it once with no flags first (dry-run: lists, deletes nothing) to
+  see what it would remove.
+
+Rules (shared by the panel button and the script, see
+`src/UploadCleanup.php`): only **image files** inside the uploads
+directory are candidates; a file counts as orphaned only when **no
+draft or published item references it**; files younger than **24 hours**
+are always kept (an upload lands on disk before the PATCH that attaches
+it, and a concurrent cleanup must never eat an in-flight upload).

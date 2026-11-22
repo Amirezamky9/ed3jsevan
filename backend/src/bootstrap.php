@@ -20,6 +20,7 @@ require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Auth.php';
 require_once __DIR__ . '/MenuStore.php';
 require_once __DIR__ . '/Uploads.php';
+require_once __DIR__ . '/UploadCleanup.php';
 require_once __DIR__ . '/Api.php';
 require_once __DIR__ . '/seed.php';
 
