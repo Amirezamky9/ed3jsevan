@@ -1,16 +1,25 @@
 import React from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface EyvanLogoProps {
   variant?: 'header' | 'full' | 'mark';
   tone?: 'gold' | 'olive' | 'ivory' | 'navy';
   className?: string;
+  /**
+   * True when the logo sits on a dark surface (footer gradient): the
+   * subtitle takes the tone color so it stays readable. On light
+   * surfaces (header, modal) the subtitle is a readable gray instead —
+   * gold on cream is too washed out.
+   */
+  onDark?: boolean;
 }
 
 const TONE_COLOR = {
-  gold: '#D4B47C',
+  // Gold from the owner's reference design (#B5945B).
+  gold: '#B5945B',
   olive: '#9AA16A',
-  ivory: '#F4F1EA',
-  navy: '#293B5F',
+  ivory: '#2F321C',
+  navy: '#6B7043',
 } as const;
 
 /**
@@ -22,8 +31,13 @@ export const EyvanLogo: React.FC<EyvanLogoProps> = ({
   variant = 'header',
   tone = 'gold',
   className = '',
+  onDark = false,
 }) => {
+  const { cafeInfo } = useLanguage();
   const strokeColor = TONE_COLOR[tone];
+  // Single-color wordmark like the real logo on dark surfaces; readable
+  // gray on light surfaces (gold on cream washes out).
+  const subtitleColor = onDark ? strokeColor : '#78716C';
 
   const archEmblem = (
     <svg
@@ -142,10 +156,13 @@ export const EyvanLogo: React.FC<EyvanLogoProps> = ({
             className="text-2xl font-semibold"
             style={{ color: strokeColor }}
           >
-            ایوان
+            {cafeInfo.brandName}
           </span>
-          <span className="mt-0.5 text-xs font-medium text-[#B8C0CC]">
-            کافه و رستوران
+          <span
+            className="mt-0.5 text-xs font-medium"
+            style={{ color: subtitleColor }}
+          >
+            {cafeInfo.brandSubtitle}
           </span>
         </div>
       </div>
@@ -160,10 +177,13 @@ export const EyvanLogo: React.FC<EyvanLogoProps> = ({
           className="text-lg font-semibold whitespace-nowrap"
           style={{ color: strokeColor }}
         >
-          ایوان
+          {cafeInfo.brandName}
         </span>
-        <span className="mt-1 text-[11px] font-normal text-[#B8C0CC] whitespace-nowrap">
-          کافه و رستوران
+        <span
+          className="mt-1 text-[11px] font-normal whitespace-nowrap"
+          style={{ color: subtitleColor }}
+        >
+          {cafeInfo.brandSubtitle}
         </span>
       </span>
     </span>

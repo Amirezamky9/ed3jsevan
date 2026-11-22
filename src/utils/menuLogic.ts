@@ -89,6 +89,27 @@ export function calculateItemPrice(
 /**
  * Filter menu items by active category, or across ALL categories when searchQuery is non-empty.
  */
+const normalizedItemTextCache = new WeakMap<MenuItem, string>();
+const normalizedCategoryTextCache = new WeakMap<MenuCategory, string>();
+
+function getNormalizedItemText(item: MenuItem): string {
+  let cached = normalizedItemTextCache.get(item);
+  if (cached === undefined) {
+    cached = normalizePersian(`${item.name} ${item.description}`);
+    normalizedItemTextCache.set(item, cached);
+  }
+  return cached;
+}
+
+function getNormalizedCategoryText(category: MenuCategory): string {
+  let cached = normalizedCategoryTextCache.get(category);
+  if (cached === undefined) {
+    cached = normalizePersian(`${category.name} ${category.shortName}`);
+    normalizedCategoryTextCache.set(category, cached);
+  }
+  return cached;
+}
+
 export function filterMenuItems(
   items: MenuItem[],
   activeCategoryId: CategoryId,
@@ -98,10 +119,7 @@ export function filterMenuItems(
   if (!q) {
     return items.filter((item) => item.categoryId === activeCategoryId);
   }
-  return items.filter((item) => {
-    const haystack = normalizePersian(`${item.name} ${item.description}`);
-    return haystack.includes(q);
-  });
+  return items.filter((item) => getNormalizedItemText(item).includes(q));
 }
 
 export interface SimpleMenuSection {
@@ -137,12 +155,11 @@ export function groupMenuForSimpleView(
   const sections: SimpleMenuSection[] = [];
   for (const category of scopedCategories) {
     if (category.comingSoon) continue;
+    const catText = getNormalizedCategoryText(category);
+    const catMatches = catText.includes(q);
     const matched = items.filter((item) => {
       if (item.categoryId !== category.id) return false;
-      const haystack = normalizePersian(
-        `${item.name} ${item.description} ${category.name} ${category.shortName}`,
-      );
-      return haystack.includes(q);
+      return catMatches || getNormalizedItemText(item).includes(q);
     });
     if (matched.length > 0) {
       sections.push({ category, items: matched });
@@ -152,7 +169,7 @@ export function groupMenuForSimpleView(
 }
 
 export function getBeanLabel(bean: BeanType): string {
-  return bean === 'arabica100' ? '۱۰۰٪ عربیکا' : '۵۰٪/۵۰٪ ترکیب قهوه';
+  return bean === 'arabica100' ? '۱۰۰٪ عربیکا' : '۵۰٪ ترکیب قهوه';
 }
 
 export function getMilkTempLabel(temp: 'standard' | 'extra-hot'): string {
@@ -173,14 +190,18 @@ export function getSyrupById(syrupId?: string | null) {
 
 /**
  * Eyvan Official Logo-Derived Atmospheric Backdrop Palette.
- * Strictly anchored in Eyvan's brand logo colors: Deep Navy, Olive Green, Antique Bronze-Gold, Midnight Black.
+ * Deep olive variants of the brand logo colors, so the hero reads olive
+ * like the footer (gradient #6B7043 → #5B6037 → #2F321C) while still
+ * shifting subtly per category/item. The tones must stay OPAQUE hex:
+ * the tone layer paints flat over the hero gradient, and translucent
+ * tones would pop in brightness when the crossfade commits.
  */
 export const BACKDROP_HEX_MAP: Record<BackdropTone, string> = {
-  navy: '#152238',
-  midnight: '#101A2C',
-  olive: '#232B1E',
-  bronze: '#251F18',
-  plum: '#241923',
+  navy: '#414E35',
+  midnight: '#2F321C',
+  olive: '#6B7043',
+  bronze: '#5B6037',
+  plum: '#4F5330',
 };
 
 export function getBackdropHex(tone: BackdropTone): string {

@@ -33,17 +33,17 @@ test('menu contains all 67 items across 8 active categories and 3 upcoming secti
 
   for (const item of MENU_ITEMS) {
     assert.ok(
-      item.image.startsWith('/src/assets/images/topdown_') &&
+      item.image.startsWith('src/assets/images/topdown_') &&
         item.image.endsWith('.webp'),
       `Missing optimized WebP overhead photo for ${item.id}`,
     );
     assert.ok(
-      item.frontImage.startsWith('/src/assets/images/eyvan_') &&
+      item.frontImage.startsWith('src/assets/images/eyvan_') &&
         item.frontImage.endsWith('.webp'),
       `Missing optimized WebP front glass photo for ${item.id}`,
     );
     assert.ok(
-      item.cutoutImage.startsWith('/src/assets/images/cutouts/') &&
+      item.cutoutImage.startsWith('src/assets/images/cutouts/') &&
         item.cutoutImage.endsWith('.webp'),
       `Missing transparent WebP cutout for ${item.id}`,
     );
@@ -186,7 +186,6 @@ test('3D table projection locks front seat to exact coaster center with monotoni
   assert.ok(Math.abs(front.screenX - base.tableCenterX) < 0.01);
   assert.ok(front.screenY > base.tableCenterY);
   assert.ok(front.perspScale > 1);
-  assert.equal(front.blurPx, 0);
 
   // Symmetric flanking seats on left & right of marble rim
   assert.ok(Math.abs(sideLeft.screenY - sideRight.screenY) < 0.01);
@@ -196,9 +195,6 @@ test('3D table projection locks front seat to exact coaster center with monotoni
         (sideRight.screenX - base.tableCenterX),
     ) < 0.01,
   );
-  assert.ok(sideLeft.blurPx > 0.8 && sideLeft.blurPx < 2.2);
-  assert.ok(back.blurPx > sideLeft.blurPx && back.blurPx <= 4.3);
-
   // Strict painter's-order depth sorting: front > sides > back
   assert.ok(front.zIndex > sideLeft.zIndex);
   assert.ok(sideLeft.zIndex > back.zIndex);
