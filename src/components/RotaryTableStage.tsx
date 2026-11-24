@@ -23,6 +23,7 @@ import { EyvanLogo } from './EyvanLogo';
 import {
   FadeInImage,
   getCutoutDimensions,
+  getCutoutFootAspect,
   isPrebakedTopdownSrc,
   preloadAndDecodeImage,
   toMobileCutoutSrc,
@@ -1706,10 +1707,33 @@ export const RotaryTableStage = memo(function RotaryTableStage({
 
             const isActive = idx === activeIndex;
             const isCup = item.vesselType === 'cup';
+            const cutoutDims = getCutoutDimensions(item.cutoutImage);
+            // Tall glasses are height-scaled, so a short wide glass
+            // (rocks glass, martini) rendered at full tall height
+            // comes out 2-3x wider than its neighbours and reads as
+            // "coming forward" off the table. Cap the DISPLAYED WIDTH
+            // of tall cutouts to a tall glass's width (0.56 x height,
+            // the mojito's aspect): wide ones scale down in height
+            // instead. Narrow tall glasses are untouched; cups keep
+            // their height (their wide photos were the approved look).
+            const tallAspect = cutoutDims
+              ? cutoutDims.width / cutoutDims.height
+              : 0.29;
             const baseHeight = isCup
               ? targetGeo.cupCutoutH
-              : targetGeo.tallCutoutH;
-            const baseFootW = isCup ? baseHeight * 0.64 : baseHeight * 0.29;
+              : Math.round(
+                  targetGeo.tallCutoutH * Math.min(1, 0.56 / tallAspect),
+                );
+            // Grounding shadow from the MEASURED glass foot (alpha
+            // scan, see CUTOUT_FOOT_ASPECT), not the old fixed
+            // 0.64/0.29 guess: the new wide cutouts' feet are
+            // 0.35-0.71 of their height, so the old shadow was
+            // narrower than the glass itself (floating) for tall
+            // glasses and far too wide for wide mug photos.
+            const footAspect =
+              getCutoutFootAspect(item.cutoutImage) ??
+              (isCup ? 0.64 : 0.29);
+            const baseFootW = baseHeight * footAspect;
             const shadowBoxW = Math.round(baseFootW * 1.9);
             const shadowBoxH = Math.round(Math.max(24, baseFootW * 0.52));
             const causticTint = isCup
@@ -1730,7 +1754,6 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             const cutoutSrc = isMobile
               ? toMobileCutoutSrc(item.cutoutImage)
               : item.cutoutImage;
-            const cutoutDims = getCutoutDimensions(item.cutoutImage);
 
             return (
               <div

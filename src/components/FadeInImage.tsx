@@ -115,6 +115,39 @@ export function getCutoutDimensions(
   return filename ? CUTOUT_DIMENSIONS[filename] : undefined;
 }
 
+/**
+ * Measured glass-foot width as a fraction of the cutout image height
+ * (alpha scan of the bottom 8% rows, 2026-11-24). The standing-drink
+ * grounding shadow is sized from the real foot, not from a fixed
+ * aspect guess: the old 0.29 (tall) / 0.64 (cup) constants are wrong
+ * for the wide new cutouts — a rocks-glass foot is ~0.55-0.71 of its
+ * height, a wide mug photo only ~0.47-0.52 — which left the new
+ * glasses floating above a too-narrow shadow (tall) or under a
+ * too-wide one (cups). Files not listed here keep the old constants
+ * via the caller's fallback.
+ */
+const CUTOUT_FOOT_ASPECT: Record<string, number> = {
+  'americano.webp': 0.61,
+  'brazilian-lemonade.webp': 0.36,
+  'caramel-macchiato.webp': 0.47,
+  'chocolate-milkshake.webp': 0.29,
+  'hot-chocolate.webp': 0.52,
+  'iced-americano.webp': 0.62,
+  'iced-espresso.webp': 0.71,
+  'iced-latte.webp': 0.39,
+  'latte.webp': 0.52,
+  'mojito.webp': 0.35,
+  'peach-iced-tea.webp': 0.32,
+  'red-love.webp': 0.39,
+  'rokato.webp': 0.55,
+  'tea.webp': 0.65,
+};
+
+export function getCutoutFootAspect(src: string): number | undefined {
+  const filename = src.split('/').pop();
+  return filename ? CUTOUT_FOOT_ASPECT[filename] : undefined;
+}
+
 interface FadeInImageProps
   extends Omit<
     React.ImgHTMLAttributes<HTMLImageElement>,
