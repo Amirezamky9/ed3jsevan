@@ -111,13 +111,15 @@ const CUTOUT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   'hot-nutella.webp': { width: 614, height: 540 },
   'hot-almond.webp': { width: 619, height: 540 },
   'carrot-milk.webp': { width: 668, height: 540 },
-  'lemonade.webp': { width: 282, height: 540 },
+  'lemonade.webp': { width: 300, height: 540 },
   'farkhondeh-herbal.webp': { width: 538, height: 540 },
   'iran-herbal.webp': { width: 528, height: 540 },
   'narineh-herbal.webp': { width: 493, height: 540 },
   'shazdeh-herbal.webp': { width: 806, height: 798 },
   'lalehzar-herbal.webp': { width: 509, height: 540 },
-  'tea.webp': { width: 494, height: 540 },
+  'tea.webp': { width: 523, height: 540 },
+  'saffron-tea.webp': { width: 534, height: 540 },
+  'tea-baklava.webp': { width: 597, height: 540 },
 };
 
 export function getCutoutDimensions(
@@ -158,13 +160,15 @@ const CUTOUT_FOOT_ASPECT: Record<string, number> = {
   'hot-nutella.webp': 0.32,
   'hot-almond.webp': 0.23,
   'carrot-milk.webp': 0.29,
-  'lemonade.webp': 0.33,
+  'lemonade.webp': 0.43,
   'farkhondeh-herbal.webp': 0.65,
   'iran-herbal.webp': 0.63,
   'narineh-herbal.webp': 0.59,
   'shazdeh-herbal.webp': 0.64,
   'lalehzar-herbal.webp': 0.61,
-  'tea.webp': 0.65,
+  'tea.webp': 0.61,
+  'saffron-tea.webp': 0.62,
+  'tea-baklava.webp': 0.72,
 };
 
 export function getCutoutFootAspect(src: string): number | undefined {
