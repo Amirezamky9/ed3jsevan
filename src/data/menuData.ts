@@ -7,6 +7,7 @@ export type CategoryId =
   | 'matcha-bar'
   | 'milkshakes'
   | 'mocktails'
+  | 'cat-d3a8c60cb86d1f5e'
   | 'breakfast'
   | 'appetizers'
   | 'main-course';
@@ -317,6 +318,16 @@ export const MENU_CATEGORIES: MenuCategory[] = [
     shortName: 'ماکتل',
     subtitle: 'ترکیب‌های گازدار و میوه‌ای تازه با مرکبات و گیاهان معطر',
     defaultTone: 'plum',
+  },
+  {
+    id: 'cat-d3a8c60cb86d1f5e',
+    name: 'میان‌وعده',
+    shortName: 'میان‌وعده',
+    subtitle: 'به‌زودی در منوی آشپزخانه ایوان',
+    comingSoon: true,
+    comingSoonDescription:
+      'کروسان تازه و میان‌وعده‌های دست‌ساز ایوان به‌زودی به منوی دیجیتال اضافه می‌شوند.',
+    defaultTone: 'bronze',
   },
   {
     id: 'breakfast',

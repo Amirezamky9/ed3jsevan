@@ -346,6 +346,13 @@ export const AR_CATEGORIES: Record<
     shortName: 'موكتيل',
     subtitle: 'توليفات فاكهية فوارة ومنعشة بالحمضيات والأعشاب العطرية الطازجة',
   },
+  'cat-d3a8c60cb86d1f5e': {
+    name: 'وجبات خفيفة',
+    shortName: 'وجبات خفيفة',
+    subtitle: 'قريباً في قائمة مطبخ إيوان',
+    comingSoonDescription:
+      'الكرواسون الطازج ووجبات إيوان الخفيفة المحضّرة يدوياً ستُضاف قريباً إلى القائمة الرقمية.',
+  },
   breakfast: {
     name: 'الإفطار',
     shortName: 'الإفطار',

@@ -68,6 +68,16 @@
       "sortOrder": 7
     },
     {
+      "id": "cat-d3a8c60cb86d1f5e",
+      "name": "میان‌وعده",
+      "shortName": "میان‌وعده",
+      "subtitle": "به‌زودی در منوی آشپزخانه ایوان",
+      "comingSoon": true,
+      "comingSoonDescription": "کروسان تازه و میان‌وعده‌های دست‌ساز ایوان به‌زودی به منوی دیجیتال اضافه می‌شوند.",
+      "defaultTone": "bronze",
+      "sortOrder": 8
+    },
+    {
       "id": "breakfast",
       "name": "صبحانه",
       "shortName": "صبحانه",
@@ -75,7 +85,7 @@
       "comingSoon": true,
       "comingSoonDescription": "منوی صبحانه ایرانی و ملل ایوان شامل سینی‌های صبحانه، بشقاب‌های گرم و نان تازه هم‌اکنون در حال طراحی و تست نهایی سرآشپز است و به‌زودی سرو می‌شود.",
       "defaultTone": "bronze",
-      "sortOrder": 8
+      "sortOrder": 9
     },
     {
       "id": "appetizers",
@@ -85,7 +95,7 @@
       "comingSoon": true,
       "comingSoonDescription": "سالادهای فصل، سوپ روز و پیش‌غذاهای دست‌ساز ایوان با مواد اولیه تازه به‌زودی به میز دیجیتال اضافه خواهند شد.",
       "defaultTone": "olive",
-      "sortOrder": 9
+      "sortOrder": 10
     },
     {
       "id": "main-course",
@@ -95,7 +105,7 @@
       "comingSoon": true,
       "comingSoonDescription": "غذاهای اصلی رستوران ایوان شامل خوراک‌های اصیل ایرانی و فرنگی به‌زودی رونمایی و روی میز دوّار ایوان ارائه می‌شوند.",
       "defaultTone": "navy",
-      "sortOrder": 10
+      "sortOrder": 11
     }
   ],
   "items": [
