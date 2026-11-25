@@ -834,7 +834,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     categoryId: 'tea-herbal',
     name: 'دمنوش فرنگ',
     description:
-      'دمنوش گیاهی خوش‌عطر و آرام‌بخش با نت‌های گلی و گیاهان معطر دست‌چین.',
+      'ترکیب انبه، نارگیل، بابونه و گل محمدی؛ دمنوشی لطیف و خوش‌عطر با طعمی ملایم و آرام‌بخش.',
     price: 260,
     isHot: true,
     image: IMG.persianCold,
@@ -847,7 +847,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     categoryId: 'tea-herbal',
     name: 'دمنوش فرخنده',
     description:
-      'ترکیب لطیف و نشاط‌آور گیاهان ایرانی با رایحه ملایم مرکبات و گلبرگ‌ها.',
+      'ترکیب به، بابونه، هل و گل محمدی؛ دمنوشی گرم و خوش‌عطر با رایحه‌ای لطیف و دلنشین.',
     price: 260,
     isHot: true,
     image: IMG.persianTea,
@@ -860,7 +860,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     categoryId: 'tea-herbal',
     name: 'دمنوش ایران',
     description:
-      'گزیده‌ای از گیاهان بومی ایران با عطر زعفران، هل و گل محمدی اصیل.',
+      'ترکیب چای سبز، انبه، نارگیل و گل محمدی؛ دمنوشی تازه و خوش‌عطر با طعمی متعادل.',
     price: 260,
     highlight: 'ترکیب اصیل',
     isHot: true,
@@ -874,7 +874,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     categoryId: 'tea-herbal',
     name: 'دمنوش نارینه',
     description:
-      'دمنوش میوه‌ای و ترش‌وشیرین با رنگ یاقوتی و عطر تازه انار و گلبرگ.',
+      'ترکیب توت‌فرنگی، چای ترش، سیب خشک و گل محمدی؛ دمنوشی میوه‌ای و ترش‌وشیرین با رنگ یاقوتی.',
     price: 260,
     isHot: true,
     image: IMG.mocktail,
@@ -887,7 +887,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     categoryId: 'tea-herbal',
     name: 'دمنوش شازده',
     description:
-      'دم‌نوش معطر و متعادل با طبع گرم و ته‌مزه دلنشین گیاهان کوهستانی.',
+      'ترکیب چای سبز و نعنا فلفلی؛ دمنوشی خنک و تازه با طعمی سبک و نشاط‌آور.',
     price: 260,
     isHot: true,
     image: IMG.persianCold,
@@ -900,7 +900,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     categoryId: 'tea-herbal',
     name: 'دمنوش لاله‌زار',
     description:
-      'الهام‌گرفته از باغ‌های گل محمدی لاله‌زار؛ آرام‌بخش، لطیف و معطر.',
+      'ترکیب سیب، به، دارچین و گل محمدی؛ دمنوشی گرم و خوش‌عطر با رایحه‌ای دلنشین.',
     price: 260,
     isHot: true,
     image: IMG.persianTea,
