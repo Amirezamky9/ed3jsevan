@@ -105,6 +105,12 @@ const CUTOUT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   'red_mocktail.webp': { width: 254, height: 540 },
   'rokato.webp': { width: 721, height: 692 },
   'strawberry_matcha.webp': { width: 190, height: 540 },
+  'farang-herbal.webp': { width: 529, height: 540 },
+  'farkhondeh-herbal.webp': { width: 538, height: 540 },
+  'iran-herbal.webp': { width: 528, height: 540 },
+  'narineh-herbal.webp': { width: 493, height: 540 },
+  'shazdeh-herbal.webp': { width: 806, height: 798 },
+  'lalehzar-herbal.webp': { width: 509, height: 540 },
   'tea.webp': { width: 494, height: 540 },
 };
 
@@ -140,6 +146,12 @@ const CUTOUT_FOOT_ASPECT: Record<string, number> = {
   'peach-iced-tea.webp': 0.32,
   'red-love.webp': 0.39,
   'rokato.webp': 0.55,
+  'farang-herbal.webp': 0.63,
+  'farkhondeh-herbal.webp': 0.65,
+  'iran-herbal.webp': 0.63,
+  'narineh-herbal.webp': 0.59,
+  'shazdeh-herbal.webp': 0.64,
+  'lalehzar-herbal.webp': 0.61,
   'tea.webp': 0.65,
 };
 
