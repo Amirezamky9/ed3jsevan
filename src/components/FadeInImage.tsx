@@ -100,6 +100,7 @@ const CUTOUT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   'mojito.webp': { width: 300, height: 540 },
   'peach-iced-tea.webp': { width: 206, height: 540 },
   'persian_cold.webp': { width: 247, height: 540 },
+  'eyvan_iced_saffron_tea.webp': { width: 297, height: 540 },
   'persian_tea.webp': { width: 603, height: 514 },
   'red-love.webp': { width: 333, height: 540 },
   'red_mocktail.webp': { width: 254, height: 540 },
@@ -153,6 +154,7 @@ export function getCutoutDimensions(
  * via the caller's fallback.
  */
 const CUTOUT_FOOT_ASPECT: Record<string, number> = {
+  'eyvan_iced_saffron_tea.webp': 0.496,
   'americano.webp': 0.61,
   'brazilian-lemonade.webp': 0.36,
   'caramel-macchiato.webp': 0.47,
