@@ -867,7 +867,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               const shiftPct = isCup ? -45.5 : -50;
               const yOff =
                 item.categoryId === 'cat-d3a8c60cb86d1f5e'
-                  ? -Math.round(btnEl.offsetHeight * 0.3)
+                  ? -Math.round(btnEl.offsetHeight * 0.3 * sy)
                   : isCup
                     ? 9
                     : 6;
