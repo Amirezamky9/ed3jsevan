@@ -865,14 +865,14 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               // button element is keyed by item.id, so they are excluded
               // from the numeric key — only the moving scales are compared.
               const shiftPct = isCup ? -45.5 : -50;
+              const sx = proj.perspScale;
+              const sy = proj.perspScale * revealScaleY;
               const yOff =
                 item.categoryId === 'cat-d3a8c60cb86d1f5e'
-                  ? -Math.round(btnEl.offsetHeight * 0.3 * sy)
+                  ? -Math.round(btnEl.offsetHeight * 0.08 * sy)
                   : isCup
                     ? 9
                     : 6;
-              const sx = proj.perspScale;
-              const sy = proj.perspScale * revealScaleY;
               writeStyleNums(btnEl, 'transform', [sx, sy], () =>
                 `translate3d(${shiftPct}%, ${yOff}px, 0) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`,
               );
@@ -1754,7 +1754,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               ? cutoutDims.width / cutoutDims.height
               : 1.2;
             const baseHeight = isPlate
-              ? Math.round((targetGeo.cupCutoutH * 0.85) / plateAspect)
+              ? Math.round((targetGeo.cupCutoutH * 0.72) / plateAspect)
               : isCup
                 ? Math.round(targetGeo.cupCutoutH * volumeFactor)
               : Math.round(
