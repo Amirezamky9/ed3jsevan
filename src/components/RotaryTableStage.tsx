@@ -655,6 +655,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
   const seatWrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
   const seatShadowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const seatBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const plateImgWrapRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   const targetWheelAngleRef = useRef<number>(
     computeShortestWheelAngle(
@@ -778,6 +779,16 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             'pointerEvents',
             meta.isFrontCamera || plateOpacityFactor <= 0.02 ? 'none' : 'auto',
           );
+          // Counter-rotate the plate photo against the wheel so the latte
+          // art always faces the viewer upright instead of turning with
+          // the table (plateAngle keeps its small per-item tilt).
+          const plateAngle = meta.items[i]?.plateAngle ?? 0;
+          writeStyleNums(
+            plateImgWrapRefs.current[i],
+            'transform',
+            [state.wheelAngle, plateAngle],
+            () => 'rotate(' + (plateAngle - state.wheelAngle).toFixed(3) + 'deg)',
+          );
         }
       }
 
@@ -874,6 +885,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
     seatWrapperRefs.current.length = items.length;
     seatShadowRefs.current.length = items.length;
     seatBtnRefs.current.length = items.length;
+    plateImgWrapRefs.current.length = items.length;
     paintFrame(animRef.current);
   }, [
     paintFrame,
@@ -1603,6 +1615,12 @@ export const RotaryTableStage = memo(function RotaryTableStage({
                           className="pointer-events-none absolute inset-[16%] rounded-full border border-[#B5945B]/16 bg-[#E9E4DA]/70"
                         />
                         {!isBroken ? (
+                          <span
+                            ref={(el) => {
+                              plateImgWrapRefs.current[idx] = el;
+                            }}
+                            className="absolute inset-0 block will-change-transform"
+                          >
                           <FadeInImage
                             src={isMobile ? toThumbSrc(item.image) : item.image}
                             fallbackSrc={item.image}
@@ -1624,10 +1642,8 @@ export const RotaryTableStage = memo(function RotaryTableStage({
                                 ? 'eyvan-plate-img-baked'
                                 : 'eyvan-plate-img'
                             } pointer-events-none h-full w-full rounded-full object-cover`}
-                            style={{
-                              transform: `rotate(${item.plateAngle ?? 0}deg)`,
-                            }}
                           />
+                          </span>
                         ) : (
                           <div className="flex h-full w-full items-center justify-center rounded-full border border-[#B5945B]/40 bg-[#FFFFFF] p-4 text-center text-xs font-medium text-[#2F321C]">
                             {item.name}
