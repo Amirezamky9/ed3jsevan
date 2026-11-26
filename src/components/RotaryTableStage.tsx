@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { MenuCategory, MenuItem } from '../data/menuData';
+import { ITEM_VOLUME_ML, MenuCategory, MenuItem } from '../data/menuData';
 import {
   calculateItemPrice,
   computeShortestWheelAngle,
@@ -1735,8 +1735,14 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             const tallAspect = cutoutDims
               ? cutoutDims.width / cutoutDims.height
               : 0.29;
+            // Real-volume sizing: cups scale by cube root of volume
+            // against the 360ml latte reference so a 120ml espresso
+            // cup stands visibly smaller than a 360ml latte cup.
+            const volumeMl = ITEM_VOLUME_ML[item.id];
+            const volumeFactor =
+              isCup && volumeMl ? Math.cbrt(volumeMl / 360) : 1;
             const baseHeight = isCup
-              ? targetGeo.cupCutoutH
+              ? Math.round(targetGeo.cupCutoutH * volumeFactor)
               : Math.round(
                   targetGeo.tallCutoutH * Math.min(1, 0.56 / tallAspect),
                 );

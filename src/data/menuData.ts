@@ -85,6 +85,24 @@ export const SYRUP_OPTIONS: SyrupOption[] = [
   { id: 'salted-caramel', name: 'کارامل نمکی', price: 35 },
 ];
 
+// Real serving volumes (ml) supplied by the owner; used to size the
+// standing-view glasses relative to each other (cube-root scale).
+export const ITEM_VOLUME_ML: Record<string, number> = {
+  espresso: 120,
+  cortado: 150,
+  cappuccino: 220,
+  latte: 360,
+  'caramel-macchiato': 360,
+  mocha: 360,
+  'chocolate-milkshake': 400,
+  'nutella-milkshake': 400,
+  'peanut-butter-milkshake': 400,
+  'lotus-milkshake': 400,
+  'pina-colada-milkshake': 400,
+  'espresso-milkshake': 400,
+  'berry-milkshake': 400,
+};
+
 export const CAFE_INFO = {
   brandName: 'ایوان',
   brandSubtitle: 'کافه و رستوران',
@@ -824,8 +842,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'red-fizz',
     categoryId: 'iced-coffee',
     name: 'رد فیز',
-    description:
-      'ترکیب خنک و گازدار اسپرسو با نت میوه‌های قرمز؛ طعمی متفاوت و پرطراوت.',
+    description: 'آب انار با اسپرسو و آب سودا؛ گازدار، ترش‌وشیرین و پرطراوت.',
     priceBlend50: 279,
     priceArabica100: 340,
     supportsSyrup: true,
@@ -1011,8 +1028,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'green-tea-cold',
     categoryId: 'cold-drinks',
     name: 'گرین تی',
-    description:
-      'چای سبز سرد دم‌کشیده با عطر برگ تازه و طعمی زلال و خنک.',
+    description: 'چای سبز سرد با سکنجبین و لیمو ترش؛ زلال و خنک.',
     price: 240,
     image: IMG.persianCold,
     frontImage: FRONT_IMG.persianCold,
@@ -1094,8 +1110,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'matcha',
     categoryId: 'matcha-bar',
     name: 'ماچا',
-    description:
-      'چای سبز پودری تشریفاتی هم‌زده با ویسک بامبو؛ شفاف، خالص و سرشار از آنتی‌اکسیدان.',
+    description: 'ماچای گرم تشریفاتی با ویسک بامبو؛ خالص و بدون سیروپ، سرشار از آنتی‌اکسیدان.',
     price: 210,
     isHot: true,
     image: IMG.matchaLatte,
@@ -1122,8 +1137,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'strawberry-matcha',
     categoryId: 'matcha-bar',
     name: 'ماچا استرابری',
-    description:
-      'لایه‌های چشم‌نواز پوره توت‌فرنگی تازه، شیر سرد و شات ماچای خالص روی یخ.',
+    description: 'پوره توت‌فرنگی تازه با شیر سرد و ماچای خالص روی یخ.',
     price: 315,
     highlight: 'پرطرفدار',
     image: IMG.strawberryMatcha,
@@ -1190,8 +1204,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'iced-pomegranate-spirulina',
     categoryId: 'matcha-bar',
     name: 'آیس اسپیریولینا انار',
-    description:
-      'ترکیب لایه‌ای و خنک اسپیریولینا با عصاره انار تازه؛ ملس و چشم‌نواز.',
+    description: 'آب انار تازه با شیر و اسپیریولینا روی یخ؛ ملس و چشم‌نواز.',
     price: 320,
     highlight: 'ترکیب ویژه',
     image: IMG.strawberryMatcha,
@@ -1304,8 +1317,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'red-love',
     categoryId: 'mocktails',
     name: 'رد لاو',
-    description:
-      'ماکتل یاقوتی و گازدار با ترکیب میوه‌های قرمز تازه و عطر مرکبات.',
+    description: 'ماکتل گازدار با طعم آناناس و فوم روی آن؛ خنک و میوه‌ای.',
     price: 260,
     image: IMG.redLove,
     frontImage: FRONT_IMG.redLove,
@@ -1330,8 +1342,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'brazilian-lemonade',
     categoryId: 'mocktails',
     name: 'لیموناد برزیلی',
-    description:
-      'لیموناد کرمی و خنک با لایم تازه و بافت مخملی سبک.',
+    description: 'لیموناد کرمی با لیمو و شیرینی عسلی؛ خنک و مخملی.',
     price: 295,
     image: IMG.brazilianLemonade,
     frontImage: FRONT_IMG.brazilianLemonade,
@@ -1369,8 +1380,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'rokato',
     categoryId: 'mocktails',
     name: 'روکاتو',
-    description:
-      'ماکتل امضادار بار سرد ایوان با توازن طعمی میوه‌ای، خنک و گازدار.',
+    description: 'ماکتل امضادار بار سرد ایوان با طعم تند، ترش و شور؛ متفاوت و گازدار.',
     price: 310,
     highlight: 'ویژه بار سرد',
     image: IMG.rokato,
@@ -1383,8 +1393,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'coco-paradise',
     categoryId: 'mocktails',
     name: 'کوکو پارادایس',
-    description:
-      'ترکیب خنک و استوایی نارگیل و میوه‌های تابستانی با عطر ملایم.',
+    description: 'ترکیب استوایی انبه، آناناس و نارگیل با عطر ملایم و بافت خنک.',
     price: 280,
     image: IMG.mocktail,
     frontImage: FRONT_IMG.redMocktail,
@@ -1396,8 +1405,7 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     id: 'green-rush',
     categoryId: 'mocktails',
     name: 'گرین راش',
-    description:
-      'ماکتل سبز و پرانرژی با نت سیب سبز، لایم و نعنای تازه.',
+    description: 'ماکتل سبز و پرانرژی با سیب سبز، نعنا و لیمو؛ خنک و ترش‌وشیرین.',
     price: 287,
     image: IMG.persianCold,
     frontImage: FRONT_IMG.greenMocktail,
