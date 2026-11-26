@@ -866,7 +866,11 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               // from the numeric key — only the moving scales are compared.
               const shiftPct = isCup ? -45.5 : -50;
               const yOff =
-                item.categoryId === 'cat-d3a8c60cb86d1f5e' ? 5 : isCup ? 9 : 6;
+                item.categoryId === 'cat-d3a8c60cb86d1f5e'
+                  ? -Math.round(btnEl.offsetHeight * 0.3)
+                  : isCup
+                    ? 9
+                    : 6;
               const sx = proj.perspScale;
               const sy = proj.perspScale * revealScaleY;
               writeStyleNums(btnEl, 'transform', [sx, sy], () =>
@@ -1750,7 +1754,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               ? cutoutDims.width / cutoutDims.height
               : 1.2;
             const baseHeight = isPlate
-              ? Math.round((targetGeo.cupCutoutH * 0.95) / plateAspect)
+              ? Math.round((targetGeo.cupCutoutH * 0.85) / plateAspect)
               : isCup
                 ? Math.round(targetGeo.cupCutoutH * volumeFactor)
               : Math.round(
@@ -1766,9 +1770,9 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               getCutoutFootAspect(item.cutoutImage) ??
               (isCup ? 0.64 : 0.29);
             const baseFootW = baseHeight * footAspect;
-            const shadowBoxW = Math.round(baseFootW * (isPlate ? 1.3 : 1.9));
+            const shadowBoxW = Math.round(baseFootW * (isPlate ? 1.15 : 1.9));
             const shadowBoxH = Math.round(
-              Math.max(18, baseFootW * (isPlate ? 0.3 : 0.52)),
+              Math.max(16, baseFootW * (isPlate ? 0.22 : 0.52)),
             );
             const causticTint = isCup
               ? null
