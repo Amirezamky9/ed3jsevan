@@ -119,6 +119,13 @@ const CUTOUT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   'lalehzar-herbal.webp': { width: 509, height: 540 },
   'tea.webp': { width: 523, height: 540 },
   'saffron-tea.webp': { width: 534, height: 540 },
+  'eyvan_cortado.webp': { width: 798, height: 540 },
+  'eyvan_cappuccino.webp': { width: 714, height: 540 },
+  'eyvan_mocha.webp': { width: 721, height: 540 },
+  'eyvan_hot_mocha.webp': { width: 708, height: 540 },
+  'eyvan_pumpkin_latte.webp': { width: 718, height: 540 },
+  'eyvan_carrot_latte.webp': { width: 724, height: 540 },
+  'eyvan_caramel_tea.webp': { width: 544, height: 540 },
   'tea-baklava.webp': { width: 597, height: 540 },
 };
 
@@ -168,6 +175,13 @@ const CUTOUT_FOOT_ASPECT: Record<string, number> = {
   'lalehzar-herbal.webp': 0.61,
   'tea.webp': 0.61,
   'saffron-tea.webp': 0.62,
+  'eyvan_cortado.webp': 0.6,
+  'eyvan_cappuccino.webp': 0.5,
+  'eyvan_mocha.webp': 0.48,
+  'eyvan_hot_mocha.webp': 0.52,
+  'eyvan_pumpkin_latte.webp': 0.47,
+  'eyvan_carrot_latte.webp': 0.53,
+  'eyvan_caramel_tea.webp': 0.53,
   'tea-baklava.webp': 0.72,
 };
 
