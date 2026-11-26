@@ -865,7 +865,8 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               // button element is keyed by item.id, so they are excluded
               // from the numeric key — only the moving scales are compared.
               const shiftPct = isCup ? -45.5 : -50;
-              const yOff = isCup ? 9 : 6;
+              const yOff =
+                item.categoryId === 'cat-d3a8c60cb86d1f5e' ? 5 : isCup ? 9 : 6;
               const sx = proj.perspScale;
               const sy = proj.perspScale * revealScaleY;
               writeStyleNums(btnEl, 'transform', [sx, sy], () =>
@@ -1741,8 +1742,17 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             const volumeMl = ITEM_VOLUME_ML[item.id];
             const volumeFactor =
               isCup && volumeMl ? Math.cbrt(volumeMl / 360) : 1;
-            const baseHeight = isCup
-              ? Math.round(targetGeo.cupCutoutH * volumeFactor)
+            // Snack plates are wide and shallow: at full cup height the
+            // plate spans far beyond its tray slot and reads as floating.
+            // Size plates by WIDTH (about one slot wide) instead.
+            const isPlate = item.categoryId === 'cat-d3a8c60cb86d1f5e';
+            const plateAspect = cutoutDims
+              ? cutoutDims.width / cutoutDims.height
+              : 1.2;
+            const baseHeight = isPlate
+              ? Math.round((targetGeo.cupCutoutH * 0.95) / plateAspect)
+              : isCup
+                ? Math.round(targetGeo.cupCutoutH * volumeFactor)
               : Math.round(
                   targetGeo.tallCutoutH * Math.min(1, 0.56 / tallAspect),
                 );
@@ -1756,8 +1766,10 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               getCutoutFootAspect(item.cutoutImage) ??
               (isCup ? 0.64 : 0.29);
             const baseFootW = baseHeight * footAspect;
-            const shadowBoxW = Math.round(baseFootW * 1.9);
-            const shadowBoxH = Math.round(Math.max(24, baseFootW * 0.52));
+            const shadowBoxW = Math.round(baseFootW * (isPlate ? 1.3 : 1.9));
+            const shadowBoxH = Math.round(
+              Math.max(18, baseFootW * (isPlate ? 0.3 : 0.52)),
+            );
             const causticTint = isCup
               ? null
               : getGlassCausticTint(item.cutoutImage);
