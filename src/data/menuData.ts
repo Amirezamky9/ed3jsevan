@@ -132,6 +132,7 @@ const IMG = {
   matchaLatte: 'src/assets/images/topdown_matcha_latte_1795167625208.webp',
   strawberryMatcha:
     'src/assets/images/topdown_strawberry_spirulina_1795167625250.webp',
+  icedPomegranateSpirulina: 'src/assets/images/topdown_iced_pomegranate_spirulina.webp',
   persianCold: 'src/assets/images/topdown_persian_cold_1795167621048.webp',
   milkshake: 'src/assets/images/topdown_milkshake_1795167621330.webp',
   mocktail: 'src/assets/images/topdown_mocktail_1795167622682.webp',
@@ -189,6 +190,7 @@ const FRONT_IMG = {
   affogatoRedFizz: 'src/assets/images/eyvan_affogato_redfizz_1795166292795.webp',
   matchaLatte: 'src/assets/images/eyvan_matcha_latte_1795166293482.webp',
   strawberryMatcha: 'src/assets/images/eyvan_strawberry_matcha_1795166292435.webp',
+  icedPomegranateSpirulina: 'src/assets/images/eyvan_iced_pomegranate_spirulina.webp',
   blueSpirulina: 'src/assets/images/eyvan_blue_spirulina_1795166292171.webp',
   persianCold: 'src/assets/images/eyvan_persian_cold_drinks_1795166292296.webp',
   chocoShake: 'src/assets/images/eyvan_chocolate_lotus_shake_1795166292561.webp',
@@ -291,10 +293,12 @@ const CUTOUT_IMG = {
   shazdehHerbal: 'src/assets/images/cutouts/shazdeh-herbal.webp',
   lalehzarHerbal: 'src/assets/images/cutouts/lalehzar-herbal.webp',
   redLove: 'src/assets/images/cutouts/red-love.webp',
+  icedPomegranateSpirulina: 'src/assets/images/cutouts/eyvan_iced_pomegranate_spirulina_v12.webp',
 } as const;
 
 const FRONT_TO_CUTOUT: Record<string, string> = {
   [FRONT_IMG.croissant]: CUTOUT_IMG.croissant,
+  [FRONT_IMG.icedPomegranateSpirulina]: CUTOUT_IMG.icedPomegranateSpirulina,
   [FRONT_IMG.chocolateTwist]: CUTOUT_IMG.chocolateTwist,
   [FRONT_IMG.chocolateCheesecake]: CUTOUT_IMG.chocolateCheesecake,
   [FRONT_IMG.cakeOfDay]: CUTOUT_IMG.cakeOfDay,
@@ -1220,8 +1224,8 @@ const RAW_MENU_ITEMS: RawMenuItem[] = [
     description: 'آب انار تازه با شیر و اسپیریولینا روی یخ؛ ملس و چشم‌نواز.',
     price: 320,
     highlight: 'ترکیب ویژه',
-    image: IMG.strawberryMatcha,
-    frontImage: FRONT_IMG.strawberryMatcha,
+    image: IMG.icedPomegranateSpirulina,
+    frontImage: FRONT_IMG.icedPomegranateSpirulina,
     prefersFrontView: true,
     plateAngle: 44,
     backdropTone: 'plum',
