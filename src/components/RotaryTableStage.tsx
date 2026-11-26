@@ -869,7 +869,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               const sy = proj.perspScale * revealScaleY;
               const yOff =
                 item.categoryId === 'cat-d3a8c60cb86d1f5e'
-                  ? -Math.round(btnEl.offsetHeight * 0.08 * sy)
+                  ? 2
                   : isCup
                     ? 9
                     : 6;
