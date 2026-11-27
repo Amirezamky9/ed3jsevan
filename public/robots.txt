@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-# No sitemap yet — add a `Sitemap:` line here once one exists.
+Sitemap: https://eyvandinig.ir/sitemap.xml

@@ -11,8 +11,9 @@ RUN bun run build
 FROM php:8.3-apache
 RUN apt-get update && apt-get install -y libsqlite3-dev \
     && docker-php-ext-install pdo_sqlite \
-    && a2enmod rewrite headers \
+    && a2enmod rewrite headers deflate expires \
     && rm -rf /var/lib/apt/lists/*
+RUN printf '<IfModule mpm_prefork_module>\n  StartServers 2\n  MinSpareServers 2\n  MaxSpareServers 4\n  MaxRequestWorkers 20\n  MaxConnectionsPerChild 1000\n</IfModule>\n' > /etc/apache2/mods-available/mpm_prefork.conf
 RUN printf 'upload_max_filesize = 8M\npost_max_size = 16M\n' > /usr/local/etc/php/conf.d/uploads.ini
 RUN printf 'Alias /uploads /data/uploads\n<Directory /data/uploads>\n  Require all granted\n</Directory>\n' > /etc/apache2/conf-available/eyvan-uploads.conf \
     && a2enconf eyvan-uploads
