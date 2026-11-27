@@ -759,11 +759,17 @@ export const RotaryTableStage = memo(function RotaryTableStage({
       const buildCoasterOp = () => coasterOp.toFixed(3);
 
       for (let i = 0; i < count; i++) {
+        // Snack cutouts already include their plate/tray, so the
+        // coaster ring would read as a duplicate ghost plate oval.
+        const itemCoasterOp =
+          meta.items[i]?.categoryId === 'cat-d3a8c60cb86d1f5e'
+            ? 0
+            : coasterOp;
         writeStyleNums(
           coasterRefs.current[i],
           'opacity',
-          [coasterOp],
-          buildCoasterOp,
+          [itemCoasterOp],
+          () => itemCoasterOp.toFixed(3),
         );
         const plateBtn = plateBtnRefs.current[i];
         if (plateBtn) {
@@ -821,7 +827,10 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               perspectivePx: state.perspective,
               tableCenterX: state.cx,
               tableCenterY: state.cy,
-              ringRadiusPx: meta.ringRadiusPx,
+              ringRadiusPx:
+                item.categoryId === 'cat-d3a8c60cb86d1f5e'
+                  ? meta.ringRadiusPx * 0.8
+                  : meta.ringRadiusPx,
               tableScale: state.scale,
               pitchDeg: state.pitch,
               pitchTrig,
@@ -829,11 +838,18 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               slotAngleDeg,
             });
 
-            // Smooth depth fade for far-rear glasses (especially on compact mobile screens)
-            const rearFade =
+            // Smooth depth fade for far-rear glasses (especially on compact mobile screens).
+            // Snack plates sit in a 3-seat ring, so both side plates are
+            // rear seats: the drink fade left them ghosted/floating, so
+            // plates keep near-full opacity instead.
+            const baseRearFade =
               proj.frontness >= -0.05
                 ? 1
                 : 0.25 + 0.75 * smoothstep(-0.92, -0.05, proj.frontness);
+            const rearFade =
+              item.categoryId === 'cat-d3a8c60cb86d1f5e'
+                ? Math.max(0.95, baseRearFade)
+                : baseRearFade;
             const seatOpacity = standingReveal * rearFade;
 
             writeStyleNums(
@@ -850,12 +866,24 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               seatOpacity.toFixed(3),
             );
 
+            const shadowLift =
+              item.categoryId === 'cat-d3a8c60cb86d1f5e' ? -62 : -44;
             writeStyleNums(
               seatShadowRefs.current[i],
               'transform',
-              [proj.perspScale],
+              [proj.perspScale, shadowLift],
               () =>
-                `translate3d(-50%, -44%, 0) scale(${proj.perspScale.toFixed(4)})`,
+                `translate3d(-50%, ${shadowLift}%, 0) scale(${proj.perspScale.toFixed(4)})`,
+            );
+            // Snack cutouts include the plate's own photo shadow; the
+            // UI grounding shadow doubled it into a detached oval.
+            const shadowOp =
+              item.categoryId === 'cat-d3a8c60cb86d1f5e' ? 0 : 1;
+            writeStyleNums(
+              seatShadowRefs.current[i],
+              'opacity',
+              [shadowOp],
+              () => shadowOp.toFixed(3),
             );
 
             const btnEl = seatBtnRefs.current[i];
@@ -869,7 +897,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               const sy = proj.perspScale * revealScaleY;
               const yOff =
                 item.categoryId === 'cat-d3a8c60cb86d1f5e'
-                  ? 2
+                  ? 7
                   : isCup
                     ? 9
                     : 6;
@@ -1754,7 +1782,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               ? cutoutDims.width / cutoutDims.height
               : 1.2;
             const baseHeight = isPlate
-              ? Math.round((targetGeo.cupCutoutH * 0.72) / plateAspect)
+              ? Math.round((targetGeo.cupCutoutH * 0.94) / plateAspect)
               : isCup
                 ? Math.round(targetGeo.cupCutoutH * volumeFactor)
               : Math.round(
@@ -1772,7 +1800,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             const baseFootW = baseHeight * footAspect;
             const shadowBoxW = Math.round(baseFootW * (isPlate ? 1.15 : 1.9));
             const shadowBoxH = Math.round(
-              Math.max(16, baseFootW * (isPlate ? 0.22 : 0.52)),
+              Math.max(16, baseFootW * (isPlate ? 0.3 : 0.52)),
             );
             const causticTint = isCup
               ? null
