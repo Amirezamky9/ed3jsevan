@@ -48,6 +48,8 @@ function eyvan_config(string $appDir, array $overrides = []): array
         'EYVAN_DB_PATH' => 'db_path',
         'EYVAN_UPLOADS_DIR' => 'uploads_dir',
         'EYVAN_UPLOADS_URL' => 'uploads_url',
+        'EYVAN_ADMIN_USERNAME' => 'admin_username',
+        'EYVAN_ADMIN_PASSWORD' => 'admin_password',
     ] as $envName => $key) {
         if (isset($overrides[$envName]) && !isset($overrides[$key])) {
             $overrides[$key] = $overrides[$envName];
@@ -75,6 +77,8 @@ function eyvan_config(string $appDir, array $overrides = []): array
         'app_dir' => $appDir,
         'db_path' => $resolve('db_path', 'EYVAN_DB_PATH', $appDir . '/data/eyvan.db'),
         'uploads_dir' => $resolve('uploads_dir', 'EYVAN_UPLOADS_DIR', eyvan_default_uploads_dir($appDir)),
+        'admin_username' => $resolve('admin_username', 'EYVAN_ADMIN_USERNAME', null),
+        'admin_password' => $resolve('admin_password', 'EYVAN_ADMIN_PASSWORD', null),
         'uploads_url' => rtrim(
             (string) $resolve('uploads_url', 'EYVAN_UPLOADS_URL', '/uploads/'),
             '/'

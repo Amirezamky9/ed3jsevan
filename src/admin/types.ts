@@ -180,7 +180,7 @@ export interface AdminApi {
   discardDraft(): Promise<MenuState>;
 
   /** POST /api/admin/login */
-  login(password: string): Promise<boolean>;
+  login(password: string, username?: string): Promise<boolean>;
   /** POST /api/admin/change-password */
   changePassword(current: string, next: string): Promise<boolean>;
   /** GET /api/admin/backup — the whole store as a JSON string. */

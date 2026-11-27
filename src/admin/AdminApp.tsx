@@ -233,6 +233,7 @@ function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
   const [authMode, setAuthMode] = useState<'checking' | 'login' | 'setup'>(
     realMode ? 'checking' : 'login',
   );
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -262,7 +263,7 @@ function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
     setError('');
     setNotice('');
     try {
-      const ok = await adminApi.login(password);
+      const ok = await adminApi.login(password, username.trim());
       if (ok) {
         window.sessionStorage.setItem(SESSION_KEY, '1');
         onLoggedIn();
@@ -306,7 +307,7 @@ function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
         return;
       }
       // Setup succeeded: log in automatically with the same password.
-      const ok = await adminApi.login(password);
+      const ok = await adminApi.login(password, username.trim());
       if (ok) {
         window.sessionStorage.setItem(SESSION_KEY, '1');
         onLoggedIn();
@@ -352,6 +353,27 @@ function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!isSetup && (
+            <div className="space-y-2">
+              <label
+                htmlFor="admin-username"
+                className="text-sm font-medium text-foreground"
+              >
+                نام کاربری
+              </label>
+              <input
+                id="admin-username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') void submit();
+                }}
+                placeholder="نام کاربری مدیر"
+                autoComplete="username"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <label
               htmlFor="admin-password"

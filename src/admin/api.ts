@@ -315,7 +315,7 @@ export class MockAdminApi implements AdminApi {
     return clone(this.draft);
   }
 
-  async login(password: string): Promise<boolean> {
+  async login(password: string, _username?: string): Promise<boolean> {
     await delay();
     // Mock mode: any non-empty password is accepted. The real check arrives
     // with the PHP backend.

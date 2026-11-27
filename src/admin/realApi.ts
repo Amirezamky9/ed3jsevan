@@ -274,11 +274,11 @@ export class RealAdminApi implements AdminApi {
     });
   }
 
-  async login(password: string): Promise<boolean> {
+  async login(password: string, username?: string): Promise<boolean> {
     const response = await fetch(`${this.baseUrl}/admin/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, username: username ?? '' }),
     });
     // A wrong password is a normal outcome, not an exception.
     if (response.status === 401) return false;

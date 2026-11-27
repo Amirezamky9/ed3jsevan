@@ -18,6 +18,22 @@ final class Auth
         return $count > 0;
     }
 
+    /**
+     * Seed the first admin password from the environment when the host
+     * provides EYVAN_ADMIN_PASSWORD and no password exists yet. The env
+     * value is hashed into the database here and never stored in plain
+     * text by the app; the host may drop the variable afterwards.
+     */
+    public static function ensureEnvAdmin(Database $db, ?string $envPassword): void
+    {
+        if ($envPassword === null || mb_strlen(trim($envPassword)) < MIN_PASSWORD_LENGTH) {
+            return;
+        }
+        if (!self::hasPassword($db)) {
+            self::setInitialPassword($db, $envPassword);
+        }
+    }
+
     /** First-run only: refuses when a password already exists. */
     public static function setInitialPassword(Database $db, string $password): void
     {
@@ -74,8 +90,16 @@ final class Auth
     }
 
     /** Verify a password and, on success, issue a bearer token (12h). */
-    public static function login(Database $db, string $password): ?string
-    {
+    public static function login(
+        Database $db,
+        string $password,
+        ?string $username = null,
+        ?string $expectedUsername = null
+    ): ?string {
+        if ($expectedUsername !== null && $expectedUsername !== ''
+            && !hash_equals($expectedUsername, (string) $username)) {
+            return null;
+        }
         if (!self::verifyPassword($db, $password)) {
             return null;
         }

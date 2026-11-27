@@ -76,6 +76,9 @@ final class Api
             return;
         }
 
+        // Seed the admin password from EYVAN_ADMIN_PASSWORD on first run.
+        Auth::ensureEnvAdmin($this->db, $this->config['admin_password'] ?? null);
+
         // First-run setup + login are the only unauthenticated admin routes.
         if ($method === 'POST' && $path === '/admin/setup') {
             $this->setup();
@@ -233,7 +236,16 @@ final class Api
         if (!is_string($password)) {
             $password = '';
         }
-        $token = Auth::login($this->db, $password);
+        $username = $body['username'] ?? null;
+        if (!is_string($username)) {
+            $username = null;
+        }
+        $token = Auth::login(
+            $this->db,
+            $password,
+            $username,
+            $this->config['admin_username'] ?? null
+        );
         if ($token === null) {
             $this->json(401, [
                 'ok' => false,
