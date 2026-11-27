@@ -147,6 +147,20 @@ const CUTOUT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   'eyvan_carrot_latte.webp': { width: 724, height: 540 },
   'eyvan_caramel_tea.webp': { width: 544, height: 540 },
   'tea-baklava.webp': { width: 597, height: 540 },
+  'eyvan_iced_caramel.webp': { width: 275, height: 540 },
+  'eyvan_iced_mocha.webp': { width: 272, height: 540 },
+  'eyvan_iced_coconut_latte.webp': { width: 260, height: 540 },
+  'eyvan_eyvan_iced_latte.webp': { width: 269, height: 540 },
+  'eyvan_iced_date_latte.webp': { width: 270, height: 540 },
+  'eyvan_red_fizz.webp': { width: 313, height: 540 },
+  'eyvan_affogato.webp': { width: 392, height: 540 },
+  'eyvan_bidmeshk_v2.webp': { width: 261, height: 540 },
+  'eyvan_khiar_sekanjabin_v2.webp': { width: 267, height: 540 },
+  'eyvan_hot_spirulina_v4.webp': { width: 675, height: 540 },
+  'eyvan_hot_matcha_v4.webp': { width: 614, height: 540 },
+  'eyvan_matcha_latte_v4.webp': { width: 711, height: 540 },
+  'eyvan_red_mojito_v3.webp': { width: 293, height: 540 },
+  'eyvan_coco_paradise_v2.webp': { width: 272, height: 540 },
 };
 
 export function getCutoutDimensions(
@@ -223,6 +237,20 @@ const CUTOUT_FOOT_ASPECT: Record<string, number> = {
   'eyvan_carrot_latte.webp': 0.53,
   'eyvan_caramel_tea.webp': 0.53,
   'tea-baklava.webp': 0.72,
+  'eyvan_iced_caramel.webp': 0.38,
+  'eyvan_iced_mocha.webp': 0.38,
+  'eyvan_iced_coconut_latte.webp': 0.378,
+  'eyvan_eyvan_iced_latte.webp': 0.367,
+  'eyvan_iced_date_latte.webp': 0.378,
+  'eyvan_red_fizz.webp': 0.411,
+  'eyvan_affogato.webp': 0.624,
+  'eyvan_bidmeshk_v2.webp': 0.352,
+  'eyvan_khiar_sekanjabin_v2.webp': 0.365,
+  'eyvan_hot_spirulina_v4.webp': 0.426,
+  'eyvan_hot_matcha_v4.webp': 0.439,
+  'eyvan_matcha_latte_v4.webp': 0.461,
+  'eyvan_red_mojito_v3.webp': 0.37,
+  'eyvan_coco_paradise_v2.webp': 0.354,
 };
 
 export function getCutoutFootAspect(src: string): number | undefined {
