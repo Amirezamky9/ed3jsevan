@@ -152,6 +152,39 @@ final class Database
             'item-9975eac993da1410' => [
                 'cutoutImage' => ['src/assets/images/cutouts/eyvan_chocolate_twist.webp', 'src/assets/images/cutouts/eyvan_chocolate_twist_v2.webp'],
             ],
+            'espresso' => [
+                'image' => ['src/assets/images/topdown_espresso_1795167624349.webp', 'src/assets/images/topdown_espresso_v2.webp'],
+                'frontImage' => ['src/assets/images/eyvan_espresso_shot_1795166293523.webp', 'src/assets/images/eyvan_espresso_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/hot_espresso.webp', 'src/assets/images/cutouts/eyvan_espresso_v2.webp'],
+            ],
+            'hot-chocolate' => [
+                'image' => ['src/assets/images/topdown_hot-chocolate.webp', 'src/assets/images/topdown_hot-chocolate_v2.webp'],
+                'frontImage' => ['src/assets/images/eyvan_hot-chocolate.webp', 'src/assets/images/eyvan_hot-chocolate_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/hot-chocolate.webp', 'src/assets/images/cutouts/hot-chocolate_v2.webp'],
+            ],
+            'white-hot-chocolate' => [
+                'image' => ['src/assets/images/topdown_white-hot-chocolate.webp', 'src/assets/images/topdown_white-hot-chocolate_v2.webp'],
+                'frontImage' => ['src/assets/images/eyvan_white-hot-chocolate.webp', 'src/assets/images/eyvan_white-hot-chocolate_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/white-hot-chocolate.webp', 'src/assets/images/cutouts/white-hot-chocolate_v2.webp'],
+            ],
+            'hot-lotus' => [
+                'image' => ['src/assets/images/topdown_hot-lotus.webp', 'src/assets/images/topdown_hot-lotus_v2.webp'],
+                'frontImage' => ['src/assets/images/eyvan_hot-lotus.webp', 'src/assets/images/eyvan_hot-lotus_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/hot-lotus.webp', 'src/assets/images/cutouts/hot-lotus_v2.webp'],
+            ],
+            'hot-nutella' => [
+                'image' => ['src/assets/images/topdown_hot-nutella.webp', 'src/assets/images/topdown_hot-nutella_v2.webp'],
+                'frontImage' => ['src/assets/images/eyvan_hot-nutella.webp', 'src/assets/images/eyvan_hot-nutella_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/hot-nutella.webp', 'src/assets/images/cutouts/hot-nutella_v2.webp'],
+            ],
+            'hot-almond' => [
+                'frontImage' => ['src/assets/images/eyvan_hot-almond.webp', 'src/assets/images/eyvan_hot-almond_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/hot-almond.webp', 'src/assets/images/cutouts/hot-almond_v2.webp'],
+            ],
+            'carrot-milk' => [
+                'frontImage' => ['src/assets/images/eyvan_carrot-milk.webp', 'src/assets/images/eyvan_carrot-milk_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/carrot-milk.webp', 'src/assets/images/cutouts/carrot-milk_v2.webp'],
+            ],
             'khiar-sekanjabin' => [
                 'image' => ['src/assets/images/topdown_khiar_sekanjabin_v3.webp', 'src/assets/images/topdown_khiar_sekanjabin_v4.webp'],
                 'cutoutImage' => ['src/assets/images/cutouts/eyvan_khiar_sekanjabin_v3.webp', 'src/assets/images/cutouts/eyvan_khiar_sekanjabin_v4.webp'],

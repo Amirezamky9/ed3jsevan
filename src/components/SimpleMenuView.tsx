@@ -31,7 +31,7 @@ import { localizeCategory, localizeItem, useLanguage } from '../i18n/LanguageCon
 
 /** Intrinsic size of the 256px front thumbs (680×508 full-size → 256×191). */
 const THUMB_WIDTH = 256;
-const THUMB_HEIGHT = 191;
+const THUMB_HEIGHT = 256;
 
 interface MenuItemCardProps {
   item: MenuItem;

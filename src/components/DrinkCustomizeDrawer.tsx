@@ -133,7 +133,7 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
               height={508}
               decoding="async"
               referrerPolicy="no-referrer"
-              className="h-52 w-full object-cover"
+              className="h-52 w-full bg-[#F3EDE2] object-contain"
             />
           </div>
 
