@@ -34,6 +34,7 @@ final class Database
         $this->createSchema();
         $this->seedIfEmpty($appDir);
         $this->migrateCafeInfoDefaults();
+        $this->migrateItemAssetPaths();
     }
 
     public function pdo(): \PDO
@@ -133,6 +134,57 @@ final class Database
         }
     }
 
+    /**
+     * Repair known stale item photo paths in existing snapshots (the seed
+     * only loads into an empty database): snack paths that pointed at
+     * non-existent files, and the khiar-sekanjabin v4 photo refresh.
+     * Only exact stale values are replaced.
+     */
+    private function migrateItemAssetPaths(): void
+    {
+        $fixes = [
+            'item-0d46775d751f4e66' => [
+                'frontImage' => ['src/assets/images/eyvan_croissant_v6.webp', 'src/assets/images/eyvan_croissant_v3.webp'],
+            ],
+            'item-bbc887c51c807b56' => [
+                'frontImage' => ['src/assets/images/eyvan_chocolate_cheesecake_v7.webp', 'src/assets/images/eyvan_chocolate_cheesecake_v4.webp'],
+            ],
+            'item-9975eac993da1410' => [
+                'cutoutImage' => ['src/assets/images/cutouts/eyvan_chocolate_twist.webp', 'src/assets/images/cutouts/eyvan_chocolate_twist_v2.webp'],
+            ],
+            'khiar-sekanjabin' => [
+                'image' => ['src/assets/images/topdown_khiar_sekanjabin_v3.webp', 'src/assets/images/topdown_khiar_sekanjabin_v4.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/eyvan_khiar_sekanjabin_v3.webp', 'src/assets/images/cutouts/eyvan_khiar_sekanjabin_v4.webp'],
+            ],
+        ];
+        foreach (['draft', 'published'] as $stateName) {
+            $json = $this->getSnapshotJson($stateName);
+            if ($json === null) {
+                continue;
+            }
+            $state = self::decode($json);
+            if (!isset($state['items']) || !is_array($state['items'])) {
+                continue;
+            }
+            $changed = false;
+            foreach ($state['items'] as &$item) {
+                $id = $item['id'] ?? null;
+                if (!is_string($id) || !isset($fixes[$id])) {
+                    continue;
+                }
+                foreach ($fixes[$id] as $field => [$stale, $fixed]) {
+                    if (($item[$field] ?? null) === $stale) {
+                        $item[$field] = $fixed;
+                        $changed = true;
+                    }
+                }
+            }
+            unset($item);
+            if ($changed) {
+                $this->setSnapshotJson($stateName, self::encode($state));
+            }
+        }
+    }
     /** Canonical JSON encoding (stable round-trips, so hasDraft compares cleanly). */
     public static function encode(mixed $value): string
     {

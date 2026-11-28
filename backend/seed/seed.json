@@ -858,12 +858,12 @@
       "description": "شربت اصیل سکنجبین خانگی با رشته‌های خیار تازه و برگ نعنا روی یخ.",
       "price": 255,
       "highlight": "خنک و اصیل",
-      "image": "src/assets/images/topdown_khiar_sekanjabin_v3.webp",
+      "image": "src/assets/images/topdown_khiar_sekanjabin_v4.webp",
       "frontImage": "src/assets/images/eyvan_khiar_sekanjabin_v3.webp",
       "prefersFrontView": true,
       "plateAngle": 18,
       "backdropTone": "olive",
-      "cutoutImage": "src/assets/images/cutouts/eyvan_khiar_sekanjabin_v3.webp",
+      "cutoutImage": "src/assets/images/cutouts/eyvan_khiar_sekanjabin_v4.webp",
       "vesselType": "tall",
       "available": true,
       "sortOrder": 4
@@ -1274,7 +1274,7 @@
       "description": "کروسان کره‌ای لایه‌لایه با پوسته طلایی و ترد، تازه از فر.",
       "price": 220,
       "image": "src/assets/images/topdown_croissant.webp",
-      "frontImage": "src/assets/images/eyvan_croissant_v6.webp",
+      "frontImage": "src/assets/images/eyvan_croissant_v3.webp",
       "cutoutImage": "src/assets/images/cutouts/eyvan_croissant_v6.webp",
       "plateAngle": 0,
       "sortOrder": 0
@@ -1294,7 +1294,7 @@
       "price": 220,
       "image": "src/assets/images/topdown_chocolate_twist.webp",
       "frontImage": "src/assets/images/eyvan_chocolate_twist_v3.webp",
-      "cutoutImage": "src/assets/images/cutouts/eyvan_chocolate_twist.webp",
+      "cutoutImage": "src/assets/images/cutouts/eyvan_chocolate_twist_v2.webp",
       "plateAngle": 6,
       "sortOrder": 1
     },
@@ -1312,7 +1312,7 @@
       "description": "چیزکیک شکلاتی با بافت خامه‌ای و رویه گاناش شکلات تلخ.",
       "price": 290,
       "image": "src/assets/images/topdown_chocolate_cheesecake.webp",
-      "frontImage": "src/assets/images/eyvan_chocolate_cheesecake_v7.webp",
+      "frontImage": "src/assets/images/eyvan_chocolate_cheesecake_v4.webp",
       "cutoutImage": "src/assets/images/cutouts/eyvan_chocolate_cheesecake_v7.webp",
       "plateAngle": -5,
       "sortOrder": 2
