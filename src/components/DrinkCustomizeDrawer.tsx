@@ -124,26 +124,26 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
         {/* Scrollable Details & Live Price Customization */}
         <div className="eyvan-scroll flex-1 space-y-5 overflow-y-auto px-6 py-5">
           {/* Eye-Level Front Glass Studio Photograph */}
-          <div className="relative h-56 overflow-hidden rounded-[14px] border border-[rgba(107,112,67,0.1)] bg-[#F3EDE2]">
-            {/* Blurred photo fill behind the fitted photo, so the
-                frame never shows flat letterbox bands. */}
-            <img
-              src={item.frontImage}
-              alt=""
-              aria-hidden="true"
-              decoding="async"
-              referrerPolicy="no-referrer"
-              className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl"
-            />
+          <div className="aspect-square overflow-hidden rounded-[14px] border border-[rgba(107,112,67,0.1)] bg-[#F3EDE2]">
+            {/* Square-fitted card photo: the whole product fills
+                the frame with a soft blurred extension baked in,
+                so there is no crop and no flat letterbox band. */}
             <FadeInImage
-              src={item.frontImage}
-              fallbackSrc={item.image}
+              src={
+                item.frontImage.startsWith('src/assets/images/')
+                  ? item.frontImage.replace(
+                      'src/assets/images/',
+                      'src/assets/images/card/',
+                    )
+                  : item.frontImage
+              }
+              fallbackSrc={item.frontImage}
               alt={item.name}
               width={680}
-              height={508}
+              height={680}
               decoding="async"
               referrerPolicy="no-referrer"
-              className="relative h-full w-full object-contain"
+              className="h-full w-full object-cover"
             />
           </div>
 
