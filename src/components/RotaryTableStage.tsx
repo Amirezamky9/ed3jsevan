@@ -788,7 +788,10 @@ export const RotaryTableStage = memo(function RotaryTableStage({
           // Counter-rotate the plate photo against the wheel so the latte
           // art always faces the viewer upright instead of turning with
           // the table (plateAngle keeps its small per-item tilt).
-          const plateAngle = meta.items[i]?.plateAngle ?? 0;
+          const plateAngle =
+            meta.items[i]?.vesselType === 'cup'
+              ? 0
+              : (meta.items[i]?.plateAngle ?? 0);
           writeStyleNums(
             plateImgWrapRefs.current[i],
             'transform',
@@ -1768,6 +1771,18 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             const tallAspect = cutoutDims
               ? cutoutDims.width / cutoutDims.height
               : 0.29;
+            // Per-item standing-size equalization (owner 2026-11-28):
+            // green-rush is a short wide tumbler whose width cap made
+            // it stand smaller than its mocktail neighbours, so it
+            // keeps full tall height; the chocolate shake's straw and
+            // wafer eat the top of its cutout, so its glass stands
+            // shorter than the other shakes and scales up to match.
+            const capFactor =
+              item.id === 'green-rush'
+                ? 1
+                : Math.min(1, 0.56 / tallAspect);
+            const heightOverride =
+              item.id === 'chocolate-milkshake' ? 1.15 : 1;
             // Real-volume sizing: cups scale by cube root of volume
             // against the 360ml latte reference so a 120ml espresso
             // cup stands visibly smaller than a 360ml latte cup.
@@ -1786,7 +1801,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
               : isCup
                 ? Math.round(targetGeo.cupCutoutH * volumeFactor)
               : Math.round(
-                  targetGeo.tallCutoutH * Math.min(1, 0.56 / tallAspect),
+                  targetGeo.tallCutoutH * capFactor * heightOverride,
                 );
             // Grounding shadow from the MEASURED glass foot (alpha
             // scan, see CUTOUT_FOOT_ASPECT), not the old fixed

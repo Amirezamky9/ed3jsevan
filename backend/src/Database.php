@@ -152,6 +152,24 @@ final class Database
             'item-9975eac993da1410' => [
                 'cutoutImage' => ['src/assets/images/cutouts/eyvan_chocolate_twist.webp', 'src/assets/images/cutouts/eyvan_chocolate_twist_v2.webp'],
             ],
+            'matcha-latte' => [
+                'image' => ['src/assets/images/topdown_matcha_latte_v4.webp', 'src/assets/images/topdown_matcha_latte_v5.webp'],
+            ],
+            'white-hot-chocolate' => [
+                'image' => ['src/assets/images/topdown_white-hot-chocolate_v2.webp', 'src/assets/images/topdown_white-hot-chocolate_v3.webp'],
+            ],
+            'hot-lotus' => [
+                'image' => ['src/assets/images/topdown_hot-lotus_v2.webp', 'src/assets/images/topdown_hot-lotus_v3.webp'],
+            ],
+            'hot-nutella' => [
+                'image' => ['src/assets/images/topdown_hot-nutella_v2.webp', 'src/assets/images/topdown_hot-nutella_v3.webp'],
+            ],
+            'hot-almond' => [
+                'image' => ['src/assets/images/topdown_hot-almond.webp', 'src/assets/images/topdown_hot-almond_v2.webp'],
+            ],
+            'carrot-milk' => [
+                'image' => ['src/assets/images/topdown_carrot-milk.webp', 'src/assets/images/topdown_carrot-milk_v2.webp'],
+            ],
             'espresso' => [
                 'image' => ['src/assets/images/topdown_espresso_1795167624349.webp', 'src/assets/images/topdown_espresso_v2.webp'],
                 'frontImage' => ['src/assets/images/eyvan_espresso_shot_1795166293523.webp', 'src/assets/images/eyvan_espresso_v2.webp'],

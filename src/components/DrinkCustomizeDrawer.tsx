@@ -124,7 +124,17 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
         {/* Scrollable Details & Live Price Customization */}
         <div className="eyvan-scroll flex-1 space-y-5 overflow-y-auto px-6 py-5">
           {/* Eye-Level Front Glass Studio Photograph */}
-          <div className="overflow-hidden rounded-[14px] border border-[rgba(107,112,67,0.1)] bg-[#FFFFFF]">
+          <div className="relative h-56 overflow-hidden rounded-[14px] border border-[rgba(107,112,67,0.1)] bg-[#F3EDE2]">
+            {/* Blurred photo fill behind the fitted photo, so the
+                frame never shows flat letterbox bands. */}
+            <img
+              src={item.frontImage}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl"
+            />
             <FadeInImage
               src={item.frontImage}
               fallbackSrc={item.image}
@@ -133,7 +143,7 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
               height={508}
               decoding="async"
               referrerPolicy="no-referrer"
-              className="h-52 w-full bg-[#F3EDE2] object-contain"
+              className="relative h-full w-full object-contain"
             />
           </div>
 
