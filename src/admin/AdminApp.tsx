@@ -268,10 +268,10 @@ function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
         window.sessionStorage.setItem(SESSION_KEY, '1');
         onLoggedIn();
       } else {
-        setError('ورود ناموفق بود. دوباره تلاش کنید.');
+        setError('نام کاربری یا رمز عبور اشتباه است.');
       }
-    } catch {
-      setError('خطایی رخ داد. دوباره تلاش کنید.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'خطایی رخ داد. دوباره تلاش کنید.');
     } finally {
       setBusy(false);
     }

@@ -247,9 +247,10 @@ final class Api
             $this->config['admin_username'] ?? null
         );
         if ($token === null) {
+            error_log('[eyvan-api] admin login failed');
             $this->json(401, [
                 'ok' => false,
-                'error' => ['code' => 'invalid_password', 'message' => 'رمز عبور اشتباه است.'],
+                'error' => ['code' => 'invalid_credentials', 'message' => 'نام کاربری یا رمز عبور اشتباه است.'],
             ]);
             return;
         }

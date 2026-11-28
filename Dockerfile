@@ -4,7 +4,7 @@ WORKDIR /build
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .
-ARG VITE_EYVAN_API_BASE=https://eyvandinig.ir
+ARG VITE_EYVAN_API_BASE=https://eyvandining.ir/api
 ENV VITE_EYVAN_API_BASE=$VITE_EYVAN_API_BASE
 RUN bun run build
 

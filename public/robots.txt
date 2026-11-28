@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://eyvandinig.ir/sitemap.xml
+Sitemap: https://eyvandining.ir/sitemap.xml
