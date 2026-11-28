@@ -131,10 +131,12 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
             <FadeInImage
               src={
                 item.frontImage.startsWith('src/assets/images/')
-                  ? item.frontImage.replace(
-                      'src/assets/images/',
-                      'src/assets/images/card/',
-                    )
+                  ? item.frontImage
+                      .replace(
+                        'src/assets/images/',
+                        'src/assets/images/card/',
+                      )
+                      .replace(/\.webp$/, '_v2.webp')
                   : item.frontImage
               }
               fallbackSrc={item.frontImage}
