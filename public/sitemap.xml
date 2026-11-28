@@ -1,9 +1,289 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://eyvandining.ir/</loc>
-    <lastmod>2026-11-27</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-11-28</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_espresso_shot_1795166293523.webp</image:loc>
+      <image:title>اسپرسو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_americano.webp</image:loc>
+      <image:title>آمریکانو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_cortado.webp</image:loc>
+      <image:title>کورتادو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_cappuccino.webp</image:loc>
+      <image:title>کاپوچینو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_latte.webp</image:loc>
+      <image:title>لاته</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_caramel-macchiato.webp</image:loc>
+      <image:title>کارامل ماکیاتو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_mocha.webp</image:loc>
+      <image:title>موکا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot_mocha.webp</image:loc>
+      <image:title>هات موکا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_pumpkin_latte.webp</image:loc>
+      <image:title>لاته پامکین</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_carrot_latte.webp</image:loc>
+      <image:title>لاته هویج</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot-chocolate.webp</image:loc>
+      <image:title>هات چاکلت</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_white-hot-chocolate.webp</image:loc>
+      <image:title>وایت چاکلت</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot-lotus.webp</image:loc>
+      <image:title>هات لوتوس</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot-nutella.webp</image:loc>
+      <image:title>هات نوتلا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot-almond.webp</image:loc>
+      <image:title>هات بادام</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_carrot-milk.webp</image:loc>
+      <image:title>شیرهویج</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_persian_tea_baklava_1795166292600.webp</image:loc>
+      <image:title>ماسالا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_masala_karak_1795166298324.webp</image:loc>
+      <image:title>چای کرک</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_caramel_tea.webp</image:loc>
+      <image:title>چای کاراملی</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced-espresso.webp</image:loc>
+      <image:title>آیس اسپرسو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced-americano.webp</image:loc>
+      <image:title>آیس آمریکانو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced-latte.webp</image:loc>
+      <image:title>آیس لاته</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_caramel.webp</image:loc>
+      <image:title>آیس کارامل</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_mocha.webp</image:loc>
+      <image:title>آیس موکا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_coconut_latte.webp</image:loc>
+      <image:title>آیس لاته نارگیل</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_red_fizz.webp</image:loc>
+      <image:title>رد فیز</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_eyvan_iced_latte.webp</image:loc>
+      <image:title>آیس لاته ایوان</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_date_latte.webp</image:loc>
+      <image:title>آیس لاته خرما</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_affogato.webp</image:loc>
+      <image:title>آفوگاتو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_tea.webp</image:loc>
+      <image:title>چای</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_tea-baklava.webp</image:loc>
+      <image:title>چای و باقلوا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_saffron-tea.webp</image:loc>
+      <image:title>چای زعفران</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_farang-herbal.webp</image:loc>
+      <image:title>دمنوش فرنگ</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_farkhondeh-herbal.webp</image:loc>
+      <image:title>دمنوش فرخنده</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iran-herbal.webp</image:loc>
+      <image:title>دمنوش ایران</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_narineh-herbal.webp</image:loc>
+      <image:title>دمنوش نارینه</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_shazdeh-herbal.webp</image:loc>
+      <image:title>دمنوش شازده</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_lalehzar-herbal.webp</image:loc>
+      <image:title>دمنوش لاله‌زار</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_green_tea_cold.webp</image:loc>
+      <image:title>گرین تی</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_saffron_tea_v5.webp</image:loc>
+      <image:title>آیس‌تی زعفران</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_bidmeshk_v2.webp</image:loc>
+      <image:title>بیدمشک</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_bahar_narenj_v2.webp</image:loc>
+      <image:title>بهارنارنج</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_khiar_sekanjabin_v3.webp</image:loc>
+      <image:title>خیارسکنجبین</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_peach-iced-tea.webp</image:loc>
+      <image:title>آیس‌تی هلو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot_matcha_v4.webp</image:loc>
+      <image:title>ماچا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_matcha_latte_v4.webp</image:loc>
+      <image:title>ماچا لاته</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_strawberry_matcha_v2.webp</image:loc>
+      <image:title>ماچا استرابری</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_matcha_v3.webp</image:loc>
+      <image:title>آیس ماچا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_matcha_latte_v3.webp</image:loc>
+      <image:title>آیس ماچا لاته</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_spirulina.webp</image:loc>
+      <image:title>آیس اسپیریولینا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_hot_spirulina_v4.webp</image:loc>
+      <image:title>اسپیریولینا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_iced_pomegranate_spirulina.webp</image:loc>
+      <image:title>آیس اسپیریولینا انار</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_chocolate-milkshake.webp</image:loc>
+      <image:title>شیک شکلات</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_nutella_milkshake.webp</image:loc>
+      <image:title>شیک نوتلا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_peanut_butter_milkshake.webp</image:loc>
+      <image:title>شیک بادام‌زمینی</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_lotus_milkshake.webp</image:loc>
+      <image:title>شیک لوتوس</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_pina_colada_milkshake.webp</image:loc>
+      <image:title>شیک پیناکولادا</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_espresso_milkshake.webp</image:loc>
+      <image:title>شیک اسپرسو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_berry_milkshake.webp</image:loc>
+      <image:title>شیک بری</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_red-love.webp</image:loc>
+      <image:title>رد لاو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_lemonade.webp</image:loc>
+      <image:title>لیموناد</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_brazilian-lemonade.webp</image:loc>
+      <image:title>لیموناد برزیلی</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_mojito.webp</image:loc>
+      <image:title>موهیتو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_red_mojito_v3.webp</image:loc>
+      <image:title>رد موهیتو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_rokato.webp</image:loc>
+      <image:title>روکاتو</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_coco_paradise_v2.webp</image:loc>
+      <image:title>کوکو پارادایس</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_green_rush.webp</image:loc>
+      <image:title>گرین راش</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_croissant_v6.webp</image:loc>
+      <image:title>کروسان</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_chocolate_twist_v3.webp</image:loc>
+      <image:title>چاکلت تویست</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://eyvandining.ir/src/assets/images/eyvan_chocolate_cheesecake_v7.webp</image:loc>
+      <image:title>چیزکیک شکلاتی</image:title>
+    </image:image>
   </url>
 </urlset>

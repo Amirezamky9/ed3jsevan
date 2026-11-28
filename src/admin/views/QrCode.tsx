@@ -8,8 +8,8 @@ import { CopyButton } from '../../components/ui/copy-button';
 import { QRCode } from '../../components/ui/qr-code';
 import { useToast } from '../../components/ui/toast';
 
-/** دامنه موقت تا زمانی که دامنه نهایی مشخص شود. */
-const MENU_URL = 'https://eyvan.cafe';
+/** دامنه اصلی منوی کافه ایوان. */
+const MENU_URL = 'https://eyvandining.ir';
 
 function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -103,7 +103,7 @@ export function QrCodeView() {
       />
 
       <Alert variant="info">
-        دامنه نهایی بعداً جایگزین می‌شود؛ QR فعلی با دامنه موقت ساخته شده است.
+        QR به دامنه اصلی کافه (eyvandining.ir) وصل است؛ بعد از چاپ روی میزها بگذارید.
       </Alert>
 
       <Card className="mx-auto max-w-md bg-white">

@@ -278,6 +278,17 @@ export async function initRemoteMenu(): Promise<boolean> {
     }
     Object.assign(CAFE_INFO, mapped.cafePatch);
 
+    // Panel SEO settings drive the live document title/description.
+    const seo = (data as { seo?: { title?: unknown; description?: unknown } }).seo;
+    if (seo && typeof seo.title === 'string' && seo.title.trim() !== '') {
+      document.title = seo.title;
+    }
+    if (seo && typeof seo.description === 'string' && seo.description.trim() !== '') {
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute('content', seo.description);
+    }
+
     warmRemotePlates(mapped.items);
     return true;
   } catch {
