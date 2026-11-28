@@ -1596,7 +1596,8 @@ export const MENU_ITEMS: MenuItem[] = RAW_MENU_ITEMS.map((item) => {
     item.categoryId === 'mocktails' ||
     item.categoryId === 'milkshakes' ||
     item.categoryId === 'cold-drinks' ||
-    item.categoryId === 'iced-coffee'
+    item.categoryId === 'iced-coffee' ||
+    ['iced-matcha', 'iced-matcha-latte', 'strawberry-matcha', 'iced-spirulina', 'iced-pomegranate-spirulina'].includes(item.id)
       ? 'tall'
       : 'cup';
   return {
