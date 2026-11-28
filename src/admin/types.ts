@@ -29,8 +29,7 @@ export interface AdminCategory extends Omit<MenuCategory, 'id'> {
 /** The 3 featured items (پیشنهاد ویژه), in display order. Item ids, max 3. */
 export type FeaturedPick = string[];
 
-/** Editable cafe info. `address` starts empty (the public menu only has a
- * placeholder sentence for it today); the admin fills the real address. */
+/** Editable cafe info shown on the public menu. */
 export interface CafeInfoEditable {
   brandName: string;
   brandSubtitle: string;
@@ -38,6 +37,7 @@ export interface CafeInfoEditable {
   instagramHandle: string;
   instagramUrl: string;
   hours: string;
+  phone: string;
   milkTempNote: string;
   paymentNote: string;
   address: string;

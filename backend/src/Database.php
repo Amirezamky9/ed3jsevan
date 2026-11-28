@@ -33,6 +33,7 @@ final class Database
         $this->pdo->exec('PRAGMA foreign_keys = ON');
         $this->createSchema();
         $this->seedIfEmpty($appDir);
+        $this->migrateCafeInfoDefaults();
     }
 
     public function pdo(): \PDO
@@ -86,6 +87,49 @@ final class Database
         } catch (\Throwable $e) {
             $this->pdo->rollBack();
             throw $e;
+        }
+    }
+
+    /**
+     * Fill in the cafe's real address/phone/hours where a snapshot still
+     * carries the old placeholder defaults (the seed only loads into an
+     * empty database, so existing installs need this one-time fill).
+     * Values an admin actually edited are left untouched.
+     */
+    private function migrateCafeInfoDefaults(): void
+    {
+        $defaults = [
+            'address' => 'شاهرود، میدان آزادی، جنب مقبره امیر اعظم، ابتدای آفتاب شمالی',
+            'phone' => '023-32240088',
+            'hours' => 'همه‌روزه از ۸:۰۰ تا ۲۳:۰۰',
+            'coordinatesLabel' => 'میدان آزادی، ابتدای آفتاب شمالی',
+        ];
+        $stale = [
+            'address' => ['', 'نشانی دقیق و موقعیت نقشه پس از تایید شما در این بخش درج می‌شود'],
+            'phone' => [''],
+            'hours' => ['همه‌روزه از ۹:۰۰ تا ۲۳:۳۰'],
+            'coordinatesLabel' => ['موقعیت مکانی آماده اتصال به نقشه'],
+        ];
+        foreach (['draft', 'published'] as $stateName) {
+            $json = $this->getSnapshotJson($stateName);
+            if ($json === null) {
+                continue;
+            }
+            $state = self::decode($json);
+            if (!isset($state['cafeInfo']) || !is_array($state['cafeInfo'])) {
+                continue;
+            }
+            $changed = false;
+            foreach ($defaults as $field => $value) {
+                $current = $state['cafeInfo'][$field] ?? null;
+                if (!is_string($current) || in_array(trim($current), $stale[$field], true)) {
+                    $state['cafeInfo'][$field] = $value;
+                    $changed = true;
+                }
+            }
+            if ($changed) {
+                $this->setSnapshotJson($stateName, self::encode($state));
+            }
         }
     }
 

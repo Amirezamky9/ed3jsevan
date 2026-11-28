@@ -17,6 +17,7 @@ import {
   LayoutGrid,
   MapPin,
   Navigation,
+  Phone,
   RotateCcw,
   Search,
   SlidersHorizontal,
@@ -1478,6 +1479,13 @@ export default function App() {
               >
                 <InstagramIcon className="h-4 w-4 shrink-0" />
                 <span dir="ltr">{CAFE_INFO.instagramHandle}</span>
+              </a>
+              <a
+                href={`tel:+98${cafeInfo.phone.replace(/\D/g, '').replace(/^0/, '')}`}
+                className="inline-flex items-center gap-2 text-[#F8F7F2] transition-colors hover:text-[#B5945B]"
+              >
+                <Phone className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+                <span dir="ltr">{cafeInfo.phone}</span>
               </a>
               <p className="max-w-xs leading-6 text-[#F8F7F2]/90">
                 {cafeInfo.milkTempNote}

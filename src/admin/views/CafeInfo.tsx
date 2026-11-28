@@ -17,6 +17,7 @@ const EMPTY_FORM: CafeInfoEditable = {
   instagramHandle: '',
   instagramUrl: '',
   hours: '',
+  phone: '',
   milkTempNote: '',
   paymentNote: '',
   address: '',
@@ -156,7 +157,17 @@ export function CafeInfoView() {
               id="cafe-hours"
               value={form.hours}
               onChange={set('hours')}
-              placeholder="همه‌روزه از ۹:۰۰ تا ۲۳:۳۰"
+              placeholder="همه‌روزه از ۸:۰۰ تا ۲۳:۰۰"
+            />
+          </Field>
+
+          <Field label="شماره تماس" htmlFor="cafe-phone">
+            <Input
+              id="cafe-phone"
+              dir="ltr"
+              value={form.phone}
+              onChange={set('phone')}
+              placeholder="023-32240088"
             />
           </Field>
 

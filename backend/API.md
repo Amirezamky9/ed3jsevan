@@ -171,7 +171,7 @@ type FeaturedPick = string[];  // item ids, max 3, display order
 
 interface CafeInfoEditable {
   brandName: string; brandSubtitle: string; tagline: string;
-  instagramHandle: string; instagramUrl: string; hours: string;
+  instagramHandle: string; instagramUrl: string; hours: string; phone: string;
   milkTempNote: string; paymentNote: string; address: string;
   coordinatesLabel: string;
 }

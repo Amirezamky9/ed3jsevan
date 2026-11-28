@@ -85,6 +85,7 @@ export interface UiStrings {
   locationTitle: string;
   locationCity: string;
   hoursHeading: string;
+  phoneHeading: string;
   hotBarStandardHeading: string;
   officialInstagram: string;
   copied: string;
@@ -175,6 +176,7 @@ export const UI_STRINGS: Record<Language, UiStrings> = {
     locationTitle: 'موقعیت ما',
     locationCity: 'شاهرود، استان سمنان',
     hoursHeading: 'ساعات پذیرایی',
+    phoneHeading: 'شماره تماس',
     hotBarStandardHeading: 'استاندارد سرو بار گرم',
     officialInstagram: 'صفحه رسمی اینستاگرام ایوان',
     copied: 'کپی شد',
@@ -261,6 +263,7 @@ export const UI_STRINGS: Record<Language, UiStrings> = {
     locationTitle: 'موقعنا',
     locationCity: 'شاهرود، محافظة سمنان',
     hoursHeading: 'ساعات العمل',
+    phoneHeading: 'رقم الهاتف',
     hotBarStandardHeading: 'معيار تقديم البار الساخن',
     officialInstagram: 'الصفحة الرسمية لكافيه إيوان على إنستغرام',
     copied: 'تم النسخ',
@@ -277,12 +280,12 @@ export const AR_CAFE_INFO = {
   brandSubtitle: 'كافيه ومطعم',
   tagline:
     'أجواء هادئة، قهوة مختصة بخيارين من الحبوب (٥٠٪ أو ١٠٠٪ أرابيكا)، أعشاب إيرانية فاخرة، وقريباً مطبخ إيوان المتكامل',
-  hours: 'يومياً من ٩:٠٠ صباحاً حتى ١١:٣٠ مساءً',
+  hours: 'يومياً من ٨:٠٠ صباحاً حتى ١١:٠٠ مساءً',
   milkTempNote:
     'درجة حرارة الحليب القياسية بين ٦٠ و٧٠ درجة مئوية؛ يرجى إبلاغ النادل إذا كنت تفضّلها أكثر سخونة',
   paymentNote: 'الدفع يتم حضورياً عند الصندوق',
-  addressStatus: 'سيتم إدراج العنوان الدقيق وموقع الخريطة فور التأكيد',
-  coordinatesLabel: 'الموقع جاهز للربط بالخريطة',
+  addressStatus: 'شاهروود، ميدان آزادي، بجوار مقبرة أمير أعظم، بداية شارع آفتاب الشمالي',
+  coordinatesLabel: 'ميدان آزادي، شاهروود',
 } as const;
 
 export const AR_SYRUPS: Record<string, string> = {

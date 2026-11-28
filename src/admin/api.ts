@@ -75,11 +75,10 @@ function seedState(): MenuState {
       instagramHandle: CAFE_INFO.instagramHandle,
       instagramUrl: CAFE_INFO.instagramUrl,
       hours: CAFE_INFO.hours,
+      phone: CAFE_INFO.phone,
       milkTempNote: CAFE_INFO.milkTempNote,
       paymentNote: CAFE_INFO.paymentNote,
-      // The public menu only has a placeholder sentence for the address;
-      // the admin fills the real one here.
-      address: '',
+      address: CAFE_INFO.addressStatus,
       coordinatesLabel: CAFE_INFO.coordinatesLabel,
     },
     featured: [...DEFAULT_FEATURED],

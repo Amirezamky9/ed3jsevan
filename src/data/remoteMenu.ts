@@ -205,8 +205,8 @@ function mapRemoteState(data: unknown): {
 
   // Cafe info: only non-empty remote strings overwrite the static values,
   // so a partial/blank field can never blank the menu. CAFE_INFO has no
-  // `address` field — the remote address replaces the placeholder
-  // `addressStatus` sentence shown in CafeInfoModal/App footer.
+  // `address` field — the remote address replaces the static
+  // `addressStatus` text shown in CafeInfoModal/App footer.
   const cafePatch: Partial<typeof CAFE_INFO> = {};
   if (isRecord(state.cafeInfo)) {
     const remote = state.cafeInfo as Record<string, unknown>;
@@ -217,6 +217,7 @@ function mapRemoteState(data: unknown): {
       'instagramHandle',
       'instagramUrl',
       'hours',
+      'phone',
       'milkTempNote',
       'paymentNote',
       'coordinatesLabel',

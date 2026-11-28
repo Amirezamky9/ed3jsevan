@@ -110,13 +110,13 @@ export const CAFE_INFO = {
   instagramHandle: '@cafeeyvan_',
   instagramUrl:
     'https://www.instagram.com/cafeeyvan_?hvrq=MWRhczU0c3d6aWhiZw==',
-  hours: 'همه‌روزه از ۹:۰۰ تا ۲۳:۳۰',
+  hours: 'همه‌روزه از ۸:۰۰ تا ۲۳:۰۰',
+  phone: '023-32240088',
   milkTempNote:
     'دمای استاندارد شیر بین ۶۰ تا ۷۰ درجه می‌باشد، در صورت تمایل به دمای بالاتر به ویتر اطلاع دهید',
   paymentNote: 'پرداخت به‌صورت حضوری در صندوق انجام می‌شود',
-  addressStatus:
-    'نشانی دقیق و موقعیت نقشه پس از تایید شما در این بخش درج می‌شود',
-  coordinatesLabel: 'موقعیت مکانی آماده اتصال به نقشه',
+  addressStatus: 'شاهرود، میدان آزادی، جنب مقبره امیر اعظم، ابتدای آفتاب شمالی',
+  coordinatesLabel: 'میدان آزادی، ابتدای آفتاب شمالی',
 };
 
 const IMG = {

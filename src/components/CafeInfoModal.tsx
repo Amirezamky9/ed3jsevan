@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Check, Clock, Copy, ExternalLink, MapPin, Thermometer, X } from 'lucide-react';
+import { Check, Clock, Copy, ExternalLink, MapPin, Phone, Thermometer, X } from 'lucide-react';
 import { CAFE_INFO } from '../data/menuData';
 import { EyvanLogo } from './EyvanLogo';
 import { InstagramIcon } from './InstagramIcon';
@@ -129,6 +129,25 @@ export const CafeInfoModal: React.FC<CafeInfoModalProps> = ({
                 <p className="mt-1 tabular-fa text-xs text-[#78716C]">
                   {cafeInfo.hours}
                 </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Phone
+                className="mt-0.5 h-4 w-4 shrink-0 text-[#6B7043]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <h3 className="text-sm font-medium text-[#2F321C]">
+                  {t.phoneHeading}
+                </h3>
+                <a
+                  href={`tel:+98${cafeInfo.phone.replace(/\D/g, '').replace(/^0/, '')}`}
+                  dir="ltr"
+                  className="mt-1 block text-xs text-[#78716C] transition-colors hover:text-[#6B7043]"
+                >
+                  {cafeInfo.phone}
+                </a>
               </div>
             </div>
 
