@@ -124,7 +124,7 @@ export function BulkPricesView() {
     if (!canApply) return;
     setApplying(true);
     try {
-      await Promise.all(
+      const updated = await Promise.all(
         affected.map((item) => {
           const patch: Partial<AdminItem> = {};
           if (item.price !== undefined) patch.price = computeNew(item.price);
@@ -137,8 +137,19 @@ export function BulkPricesView() {
           return adminApi.updateItem(item.id, patch);
         }),
       );
+      // Reflect the new prices immediately so the preview recomputes
+      // from them (and Apply stays usable), then reconcile with the
+      // server copy.
+      const byId = new Map(updated.map((u) => [u.id, u] as const));
+      setMenu((prev) =>
+        prev
+          ? {
+              ...prev,
+              items: prev.items.map((it) => byId.get(it.id) ?? it),
+            }
+          : prev,
+      );
       toast({ title: 'قیمت‌ها به‌روز شد', variant: 'success' });
-      setAmount(undefined);
       await load();
     } catch {
       toast({ title: 'به‌روزرسانی قیمت‌ها ناموفق بود', variant: 'error' });

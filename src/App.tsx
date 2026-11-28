@@ -758,7 +758,7 @@ export default function App() {
               setDrawerItem(null);
               handleSelectCategory('hot-coffee');
             }}
-            aria-label="بازگشت به ابتدای منوی کافه و رستوران ایوان"
+            aria-label={t.backToTopAria}
             className="shrink-0 rounded-[8px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5945B]"
           >
             <EyvanLogo variant="header" tone="gold" onDark />
@@ -766,7 +766,7 @@ export default function App() {
 
           {/* Zone 2: Desktop Single-Line Navigation Links */}
           <nav
-            aria-label="ناوبری اصلی"
+            aria-label={t.mainNav}
             className="hidden items-center gap-7 text-sm font-normal text-[#F8F7F2]/85 md:flex"
           >
             <button
@@ -849,7 +849,7 @@ export default function App() {
         away with the hero; while the hero is in view it looks identical to
         the old fixed bar (top-12 = directly below the h-12 header). */}
         <nav
-          aria-label="انتخاب دسته‌بندی منو در موبایل"
+          aria-label={t.mobileCategorySelect}
           className="absolute inset-x-0 top-12 z-30 border-b border-white/10 bg-[#2F321C]/85 px-2.5 py-1 backdrop-blur-md md:top-16 lg:hidden"
         >
           <div className="flex items-center gap-1.5">
@@ -959,7 +959,7 @@ export default function App() {
 
         {/* Layer 2: Right-Side Editorial Product Showcase (Desktop RTL Right / Mobile Lower Sheet) */}
         <section
-          aria-label="جزئیات محصول انتخاب‌شده روی میز"
+          aria-label={t.selectedItemDetails}
           className={`eyvan-showcase-panel pointer-events-none relative z-20 mx-auto flex h-full max-w-[1440px] flex-col justify-end px-3 pt-28 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-[opacity,transform] duration-300 ease-out sm:px-6 lg:flex-row lg:items-center lg:justify-start lg:px-12 lg:pt-16 lg:pb-16 ${
             overviewMode
               ? 'translate-y-4 opacity-0'
@@ -988,7 +988,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setSearchOpen(true)}
-                      aria-label="جستجو در منو"
+                      aria-label={t.searchInMenu}
                       className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[rgba(107,112,67,0.16)] bg-[#FFFFFF]/90 text-[#2F321C]"
                     >
                       <Search className="h-3.5 w-3.5" strokeWidth={1.7} />
@@ -1056,7 +1056,7 @@ export default function App() {
                         setCameraAngle('top');
                         setOverviewMode(true);
                       }}
-                      aria-label="نمای کلی میز"
+                      aria-label={t.overviewTable}
                       className="inline-flex h-8 items-center gap-1 rounded-[8px] border border-[rgba(107,112,67,0.16)] bg-[#FFFFFF]/90 px-2.5 text-[clamp(0.6875rem,2.4vw,0.75rem)] font-medium text-[#2F321C] transition-colors hover:border-[#B5945B]"
                     >
                       <Disc
@@ -1068,7 +1068,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setSearchOpen(true)}
-                      aria-label="جستجو در منو"
+                      aria-label={t.searchInMenu}
                       className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[rgba(107,112,67,0.16)] bg-[#FFFFFF]/90 text-[#2F321C]"
                     >
                       <Search className="h-3.5 w-3.5" strokeWidth={1.7} />
@@ -1146,7 +1146,7 @@ export default function App() {
                   {hasDualBean ? (
                     <div
                       role="group"
-                      aria-label="انتخاب نوع دانه قهوه"
+                      aria-label={t.selectCoffeeBean}
                       className="flex items-center gap-1 rounded-[10px] border border-[rgba(107,112,67,0.18)] bg-[#FFFFFF]/88 p-1"
                     >
                       <button
@@ -1265,7 +1265,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => handleStepItem(1)}
-                      aria-label="نوشیدنی بعدی روی میز"
+                      aria-label={t.nextDrink}
                       className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(107,112,67,0.24)] bg-[#FFFFFF]/90 text-[#2F321C] transition-colors hover:border-[#B5945B] hover:text-[#6B7043] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B7043] lg:h-10 lg:w-10"
                     >
                       <ChevronRight className="h-4 w-4" strokeWidth={1.8} />
@@ -1319,7 +1319,7 @@ export default function App() {
 
         {/* Desktop Bottom Spatial Category Dock (Mobile uses the always-visible top category bar below header) */}
         <nav
-          aria-label="دسته‌بندی‌های منوی کافه و رستوران ایوان"
+          aria-label={t.categoriesAria}
           className="pointer-events-none absolute inset-x-0 bottom-3 z-30 hidden justify-center px-3 lg:flex"
         >
           <div className="pointer-events-auto flex h-[52px] w-auto max-w-[1180px] items-center gap-1.5 rounded-[14px] border border-[rgba(107,112,67,0.16)] bg-[#FFFFFF]/95 p-1.5 shadow-xl">
@@ -1367,7 +1367,7 @@ export default function App() {
       simple menu was missing until the user scrolled. The chunk is
       idle-preloaded and list images are lazy-loaded, so this stays cheap. */}
       <section
-        aria-label="منوی کامل کافه و رستوران ایوان"
+        aria-label={t.fullMenuAria}
         className="relative z-20 bg-[#F8F7F2]"
       >
         <Suspense fallback={<div className="min-h-[400px]" aria-hidden="true" />}>

@@ -76,7 +76,7 @@ const MenuItemCard = React.memo(function MenuItemCard({
           <button
             type="button"
             onClick={() => onSelectItemDetails(item)}
-            aria-label={`مشاهده جزئیات ${item.name}`}
+            aria-label={`${t.viewDetailsPrefix} ${item.name}`}
             className="h-24 w-24 shrink-0 overflow-hidden rounded-[10px] border border-[rgba(107,112,67,0.08)] bg-[#F8F7F2] sm:h-28 sm:w-28"
           >
             <FadeInImage
@@ -284,14 +284,14 @@ export const SimpleMenuView: React.FC<SimpleMenuViewProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.simpleSearchPlaceholder}
-              aria-label="جستجو در منو"
+              aria-label={t.searchInMenu}
               className="w-full rounded-[10px] border border-[rgba(107,112,67,0.14)] bg-[#FFFFFF] py-2.5 pr-10 pl-9 text-sm text-[#2F321C] placeholder:text-[#A8A29E] focus:border-[#B5945B] focus:outline-none"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                aria-label="پاک کردن جستجو"
+                aria-label={t.clearSearch}
                 className="absolute top-1/2 left-2.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-[6px] text-[#78716C] hover:text-[#2F321C]"
               >
                 <X className="h-3.5 w-3.5" strokeWidth={1.7} />

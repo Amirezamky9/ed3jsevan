@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 /**
  * Splash / loading screen: the arch logo draws itself (stroke animation),
@@ -154,12 +155,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   leaving = false,
   compact = false,
 }) => {
+  const { t } = useLanguage();
   if (compact) {
     return (
       <div
         className="fixed inset-0 z-[100] flex items-center justify-center bg-[#F8F7F2]"
         role="status"
-        aria-label="در حال بارگذاری"
+        aria-label={t.loading}
       >
         <div className="eyvan-soft-pulse h-24 w-[72px] text-[#6B7043]">
           <EyvanSplashLogo animated={false} />
@@ -174,7 +176,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         leaving ? 'pointer-events-none scale-105 opacity-0' : ''
       }`}
       role="status"
-      aria-label="در حال بارگذاری منوی کافه ایوان"
+      aria-label={t.loadingMenu}
     >
       <div className="relative flex flex-col items-center">
         {/* Zero-blur soft depth halo behind the logo (replaces expensive blur-2xl) */}

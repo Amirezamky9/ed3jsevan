@@ -218,12 +218,13 @@ const ComingSoonClochePlate = memo(function ComingSoonClochePlate({
 }: {
   label: string;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="relative flex h-full w-full items-center justify-center select-none">
       <svg
         viewBox="0 0 260 260"
         className="h-[88%] w-[88%]"
-        aria-label={`سرویس ${label} به‌زودی`}
+        aria-label={`${t.comingSoonServicePrefix} ${label} ${t.comingSoon}`}
       >
         <defs>
           <radialGradient id="clochePlate" cx="45%" cy="42%" r="56%">
@@ -1428,7 +1429,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
-      aria-label="میز دوّار نمایش محصولات کافه ایوان"
+      aria-label={t.rotaryTableAria}
       className="pointer-events-auto absolute inset-0 overflow-hidden select-none touch-pan-y"
       style={{ contain: "layout style paint" }}
     >
@@ -1618,8 +1619,8 @@ export const RotaryTableStage = memo(function RotaryTableStage({
                         aria-hidden={isFrontCamera}
                         aria-label={
                           isActive
-                            ? `${item.name} — پایین آمدن دوربین به نمای روبه‌رو`
-                            : `${item.name} — انتخاب روی میز`
+                            ? `${item.name} — ${t.plateToFront}`
+                            : `${item.name} — ${t.plateSelect}`
                         }
                         aria-pressed={isActive}
                         className="eyvan-stage-btn eyvan-plate-scale group absolute inset-0 cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B7043]"
@@ -1877,8 +1878,8 @@ export const RotaryTableStage = memo(function RotaryTableStage({
                   aria-hidden={!isFrontCamera}
                   aria-label={
                     isActive
-                      ? `${item.name} — بازگشت به نمای بالا`
-                      : `${item.name} — چرخاندن میز و نمایش از روبه‌رو`
+                      ? `${item.name} — ${t.backToTopView}`
+                      : `${item.name} — ${t.rotateShowFront}`
                   }
                   className="eyvan-stage-btn pointer-events-auto absolute bottom-0 left-0 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline-none"
                   style={{
@@ -1891,7 +1892,7 @@ export const RotaryTableStage = memo(function RotaryTableStage({
                   <FadeInImage
                     src={cutoutSrc}
                     fallbackSrc={item.cutoutImage}
-                    alt={`نمای روبه‌رو ${item.name}`}
+                    alt={`${t.frontViewAltPrefix} ${item.name}`}
                     width={cutoutDims?.width}
                     height={cutoutDims?.height}
                     decoding="async"

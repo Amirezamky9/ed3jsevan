@@ -120,6 +120,7 @@ export class RealAdminApi implements AdminApi {
     init: RequestInit = {},
   ): Promise<T> {
     const response = await fetch(`${this.baseUrl}${path}`, {
+      cache: 'no-store',
       ...init,
       headers: {
         ...this.authHeaders(),

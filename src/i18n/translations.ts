@@ -5,6 +5,28 @@ export type Language = 'fa' | 'ar';
 export interface UiStrings {
   langShort: string;
   switchLangAria: string;
+  closeCafeInfo: string;
+  closeProductDetails: string;
+  comingSoonServicePrefix: string;
+  rotaryTableAria: string;
+  plateToFront: string;
+  plateSelect: string;
+  rotateShowFront: string;
+  frontViewAltPrefix: string;
+  searchEyvanMenu: string;
+  closeSearch: string;
+  viewDetailsPrefix: string;
+  searchInMenu: string;
+  clearSearch: string;
+  loading: string;
+  loadingMenu: string;
+  backToTopAria: string;
+  mainNav: string;
+  mobileCategorySelect: string;
+  selectedItemDetails: string;
+  nextDrink: string;
+  categoriesAria: string;
+  fullMenuAria: string;
   // Header & Nav
   overviewTable: string;
   overviewShort: string;
@@ -103,6 +125,28 @@ export const UI_STRINGS: Record<Language, UiStrings> = {
     // abbreviation — "عر" read as a typo; the button now says "عربی".
     langShort: 'عربی',
     switchLangAria: 'تغییر زبان به عربی',
+    closeCafeInfo: 'بستن پنجره مشخصات کافه',
+    closeProductDetails: 'بستن جزئیات محصول',
+    comingSoonServicePrefix: 'سرویس',
+    rotaryTableAria: 'میز دوّار نمایش محصولات کافه ایوان',
+    plateToFront: 'پایین آمدن دوربین به نمای روبه‌رو',
+    plateSelect: 'انتخاب روی میز',
+    rotateShowFront: 'چرخاندن میز و نمایش از روبه‌رو',
+    frontViewAltPrefix: 'نمای روبه‌رو',
+    searchEyvanMenu: 'جستجو در منوی کافه ایوان',
+    closeSearch: 'بستن جستجو',
+    viewDetailsPrefix: 'مشاهده جزئیات',
+    searchInMenu: 'جستجو در منو',
+    clearSearch: 'پاک کردن جستجو',
+    loading: 'در حال بارگذاری',
+    loadingMenu: 'در حال بارگذاری منوی کافه ایوان',
+    backToTopAria: 'بازگشت به ابتدای منوی کافه و رستوران ایوان',
+    mainNav: 'ناوبری اصلی',
+    mobileCategorySelect: 'انتخاب دسته‌بندی منو در موبایل',
+    selectedItemDetails: 'جزئیات محصول انتخاب‌شده روی میز',
+    nextDrink: 'نوشیدنی بعدی روی میز',
+    categoriesAria: 'دسته‌بندی‌های منوی کافه و رستوران ایوان',
+    fullMenuAria: 'منوی کامل کافه و رستوران ایوان',
     overviewTable: 'نمای کلی میز',
     overviewShort: 'نمای کلی',
     search: 'جستجو',
@@ -190,6 +234,28 @@ export const UI_STRINGS: Record<Language, UiStrings> = {
     // Full target-language name here too ("فارسی", not the "فا" abbreviation).
     langShort: 'فارسی',
     switchLangAria: 'التبديل إلى اللغة الفارسية',
+    closeCafeInfo: 'إغلاق نافذة معلومات المقهى',
+    closeProductDetails: 'إغلاق تفاصيل المنتج',
+    comingSoonServicePrefix: 'خدمة',
+    rotaryTableAria: 'طاولة إيوان الدوّارة لعرض المنتجات',
+    plateToFront: 'النزول إلى العرض الأمامي',
+    plateSelect: 'الاختيار على الطاولة',
+    rotateShowFront: 'تدوير الطاولة والعرض من الأمام',
+    frontViewAltPrefix: 'العرض الأمامي',
+    searchEyvanMenu: 'البحث في قائمة مقهى إيوان',
+    closeSearch: 'إغلاق البحث',
+    viewDetailsPrefix: 'عرض تفاصيل',
+    searchInMenu: 'البحث في القائمة',
+    clearSearch: 'مسح البحث',
+    loading: 'جارٍ التحميل',
+    loadingMenu: 'جارٍ تحميل قائمة مقهى إيوان',
+    backToTopAria: 'العودة إلى بداية قائمة مقهى ومطعم إيوان',
+    mainNav: 'التنقّل الرئيسي',
+    mobileCategorySelect: 'اختيار فئة القائمة على الهاتف',
+    selectedItemDetails: 'تفاصيل المنتج المحدد على الطاولة',
+    nextDrink: 'المشروب التالي على الطاولة',
+    categoriesAria: 'فئات قائمة مقهى ومطعم إيوان',
+    fullMenuAria: 'القائمة الكاملة لمقهى ومطعم إيوان',
     overviewTable: 'نظرة عامة على الطاولة',
     overviewShort: 'نظرة عامة',
     search: 'بحث',

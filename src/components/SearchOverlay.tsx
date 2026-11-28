@@ -87,7 +87,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="جستجو در منوی کافه ایوان"
+      aria-label={t.searchEyvanMenu}
       className="eyvan-overlay-backdrop fixed inset-0 z-50 flex items-start justify-center bg-[#070B14]/76 p-4 pt-16 sm:pt-24"
       data-state={panelState === 'open' ? 'open' : 'closed'}
       onClick={(e) => {
@@ -112,7 +112,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            aria-label="بستن جستجو"
+            aria-label={t.closeSearch}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[#A8A29E] hover:bg-[#FFFFFF] hover:text-[#2F321C]"
           >
             <X className="h-4 w-4" strokeWidth={1.6} />

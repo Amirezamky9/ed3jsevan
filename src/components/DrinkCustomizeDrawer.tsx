@@ -114,7 +114,7 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            aria-label="بستن جزئیات محصول"
+            aria-label={t.closeProductDetails}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[rgba(107,112,67,0.12)] bg-[#FFFFFF] text-[#2F321C] hover:border-[#B5945B] hover:text-[#6B7043] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B7043]"
           >
             <X className="h-4 w-4" strokeWidth={1.6} />
