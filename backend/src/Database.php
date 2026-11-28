@@ -155,6 +155,9 @@ final class Database
             'matcha-latte' => [
                 'image' => ['src/assets/images/topdown_matcha_latte_v4.webp', 'src/assets/images/topdown_matcha_latte_v5.webp'],
             ],
+            'spirulina' => [
+                'image' => ['src/assets/images/topdown_hot_spirulina_v4.webp', 'src/assets/images/topdown_hot_spirulina_v5.webp'],
+            ],
             'espresso' => [
                 'image' => ['src/assets/images/topdown_espresso_1795167624349.webp', 'src/assets/images/topdown_espresso_v2.webp'],
                 'frontImage' => ['src/assets/images/eyvan_espresso_shot_1795166293523.webp', 'src/assets/images/eyvan_espresso_v2.webp'],

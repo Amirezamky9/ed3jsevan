@@ -142,7 +142,7 @@ const IMG = {
   baharNarenj: 'src/assets/images/topdown_bahar_narenj_v3.webp',
   bidmeshk: 'src/assets/images/topdown_bidmeshk_v2.webp',
   greenTeaCold: 'src/assets/images/topdown_green_tea_cold_v2.webp',
-  hotSpirulina: 'src/assets/images/topdown_hot_spirulina_v4.webp',
+  hotSpirulina: 'src/assets/images/topdown_hot_spirulina_v5.webp',
   matchaLatteV2: 'src/assets/images/topdown_matcha_latte_v5.webp',
   hotMatcha: 'src/assets/images/topdown_hot_matcha_v4.webp',
   icedSpirulina: 'src/assets/images/topdown_iced_spirulina_v2.webp',
