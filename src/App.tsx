@@ -355,6 +355,36 @@ export default function App() {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [infoOpen, setInfoOpen] = useState<boolean>(false);
   const [mobileCatsOpen, setMobileCatsOpen] = useState<boolean>(false);
+  // Phone back button closes the open card/sheet instead of leaving
+  // the menu: opening an overlay pushes a history entry, and the
+  // popstate it produces closes the overlay (owner 2026-11-28).
+  const anyOverlayOpen =
+    drawerItem !== null || searchOpen || infoOpen || mobileCatsOpen;
+  useEffect(() => {
+    if (!anyOverlayOpen) return;
+    window.history.pushState({ eyvanOverlay: true }, '');
+    const onPopState = () => {
+      setDrawerItem(null);
+      setSearchOpen(false);
+      setInfoOpen(false);
+      setMobileCatsOpen(false);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [anyOverlayOpen]);
+  const closeOverlays = () => {
+    if (
+      (window.history.state as { eyvanOverlay?: boolean } | null)
+        ?.eyvanOverlay
+    ) {
+      window.history.back();
+    } else {
+      setDrawerItem(null);
+      setSearchOpen(false);
+      setInfoOpen(false);
+      setMobileCatsOpen(false);
+    }
+  };
   // Which list the shared mobile category sheet filters: the hero table's
   // category (opened from the hero bar) or the list section's filter
   // (opened from the list). The sheet reads/writes the matching state.
@@ -1519,7 +1549,7 @@ export default function App() {
             onBeanChange={(bean) => {
               if (drawerItem) handleSetBeanForItem(drawerItem.id, bean);
             }}
-            onClose={() => setDrawerItem(null)}
+            onClose={closeOverlays}
           />
         </Suspense>
       )}
@@ -1528,7 +1558,7 @@ export default function App() {
         <Suspense fallback={<SplashScreen compact />}>
           <SearchOverlay
             open={searchOpen}
-            onClose={() => setSearchOpen(false)}
+            onClose={closeOverlays}
             onSelectMenuItem={handleJumpToTableItem}
           />
         </Suspense>
@@ -1549,14 +1579,14 @@ export default function App() {
                 handleSelectCategory(catId);
               }
             }}
-            onClose={() => setMobileCatsOpen(false)}
+            onClose={closeOverlays}
           />
         </Suspense>
       )}
 
       {infoOpen && (
         <Suspense fallback={<SplashScreen compact />}>
-          <CafeInfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
+          <CafeInfoModal open={infoOpen} onClose={closeOverlays} />
         </Suspense>
       )}
     </div>

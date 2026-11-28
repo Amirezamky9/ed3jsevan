@@ -1778,11 +1778,10 @@ export const RotaryTableStage = memo(function RotaryTableStage({
             // wafer eat the top of its cutout, so its glass stands
             // shorter than the other shakes and scales up to match.
             const capFactor =
-              item.id === 'green-rush'
+              item.id === 'green-rush' || item.id === 'khiar-sekanjabin'
                 ? 1
                 : Math.min(1, 0.56 / tallAspect);
-            const heightOverride =
-              item.id === 'chocolate-milkshake' ? 1.15 : 1;
+            const heightOverride = 1;
             // Real-volume sizing: cups scale by cube root of volume
             // against the 360ml latte reference so a 120ml espresso
             // cup stands visibly smaller than a 360ml latte cup.

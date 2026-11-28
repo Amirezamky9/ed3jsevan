@@ -136,7 +136,7 @@ export const DrinkCustomizeDrawer: React.FC<DrinkCustomizeDrawerProps> = ({
                         'src/assets/images/',
                         'src/assets/images/card/',
                       )
-                      .replace(/\.webp$/, '_v2.webp')
+                      .replace(/\.webp$/, '_v2.webp?v=3')
                   : item.frontImage
               }
               fallbackSrc={item.frontImage}

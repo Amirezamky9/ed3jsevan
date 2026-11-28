@@ -47,7 +47,7 @@ export function toThumbSrc(src: string): string {
   if (!src.startsWith(prefix)) return src;
   const rest = src.slice(prefix.length);
   if (rest.includes('/')) return src;
-  return `${prefix}thumbs/${rest}`;
+  return `${prefix}thumbs/${rest}?v=5`;
 }
 
 /**
@@ -179,6 +179,8 @@ const CUTOUT_DIMENSIONS: Record<string, { width: number; height: number }> = {
   'eyvan_khiar_sekanjabin_v2.webp': { width: 267, height: 540 },
   'eyvan_khiar_sekanjabin_v3.webp': { width: 427, height: 540 },
   'eyvan_khiar_sekanjabin_v4.webp': { width: 426, height: 540 },
+  'eyvan_khiar_sekanjabin_v5.webp': { width: 426, height: 540 },
+  'eyvan_chocolate_milkshake_v2.webp': { width: 206, height: 540 },
   'eyvan_hot_spirulina_v4.webp': { width: 675, height: 540 },
   'eyvan_hot_matcha_v4.webp': { width: 614, height: 540 },
   'eyvan_matcha_latte_v4.webp': { width: 711, height: 540 },
@@ -292,6 +294,8 @@ const CUTOUT_FOOT_ASPECT: Record<string, number> = {
   'eyvan_khiar_sekanjabin_v2.webp': 0.365,
   'eyvan_khiar_sekanjabin_v3.webp': 0.404,
   'eyvan_khiar_sekanjabin_v4.webp': 0.400,
+  'eyvan_khiar_sekanjabin_v5.webp': 0.400,
+  'eyvan_chocolate_milkshake_v2.webp': 0.35,
   'eyvan_hot_spirulina_v4.webp': 0.426,
   'eyvan_hot_matcha_v4.webp': 0.439,
   'eyvan_matcha_latte_v4.webp': 0.461,

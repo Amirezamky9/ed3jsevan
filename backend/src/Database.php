@@ -191,8 +191,14 @@ final class Database
                 'cutoutImage' => ['src/assets/images/cutouts/carrot-milk.webp', 'src/assets/images/cutouts/carrot-milk_v2.webp'],
             ],
             'khiar-sekanjabin' => [
-                'image' => ['src/assets/images/topdown_khiar_sekanjabin_v3.webp', 'src/assets/images/topdown_khiar_sekanjabin_v4.webp'],
-                'cutoutImage' => ['src/assets/images/cutouts/eyvan_khiar_sekanjabin_v3.webp', 'src/assets/images/cutouts/eyvan_khiar_sekanjabin_v4.webp'],
+                'image' => ['src/assets/images/topdown_khiar_sekanjabin_v4.webp', 'src/assets/images/topdown_khiar_sekanjabin_v5.webp'],
+                'frontImage' => ['src/assets/images/eyvan_khiar_sekanjabin_v3.webp', 'src/assets/images/eyvan_khiar_sekanjabin_v4.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/eyvan_khiar_sekanjabin_v4.webp', 'src/assets/images/cutouts/eyvan_khiar_sekanjabin_v5.webp'],
+            ],
+            'chocolate-milkshake' => [
+                'image' => ['src/assets/images/topdown_chocolate-milkshake.webp', 'src/assets/images/topdown_chocolate-milkshake_v2.webp'],
+                'frontImage' => ['src/assets/images/eyvan_chocolate-milkshake.webp', 'src/assets/images/eyvan_chocolate-milkshake_v2.webp'],
+                'cutoutImage' => ['src/assets/images/cutouts/chocolate-milkshake.webp', 'src/assets/images/cutouts/eyvan_chocolate_milkshake_v2.webp'],
             ],
         ];
         foreach (['draft', 'published'] as $stateName) {
