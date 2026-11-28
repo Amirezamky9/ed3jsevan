@@ -432,7 +432,7 @@ export const SimpleMenuView: React.FC<SimpleMenuViewProps> = ({
                     <div className="flex flex-col justify-between gap-4 rounded-[16px] border border-[rgba(154,161,106,0.28)] bg-[#FFFFFF] p-6 sm:flex-row sm:items-center">
                       <div className="max-w-2xl">
                         <p className="text-xs font-medium text-[#9AA16A]">
-                          آشپزخانه کافه و رستوران ایوان · {t.comingSoon}
+                          {t.eyvanKitchen} · {t.comingSoon}
                         </p>
                         <p className="mt-2 text-sm leading-7 text-[#57534E]">
                           {category.comingSoonDescription}
